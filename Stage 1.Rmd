@@ -64,7 +64,22 @@ Do some data visualization (distribution graphs).
 hist(insurance$age, xlab = 'age', main = 'Age', col = 'blue')
 ```
 
+```{r}
+table(sex)
+```
 
+```{r}
+hist(insurance$bmi, xlab = 'bmi', main = 'BMI', col = 'red')
+```
+```{r}
+hist(insurance$children, xlab = 'children', main = 'Children', col = 'green')
+```
+```{r}
+table(region)
+```
+```{r}
+hist(insurance$charges, xlab = 'charges', main = 'Charges', col = 'yellow')
+```
 
 
 
