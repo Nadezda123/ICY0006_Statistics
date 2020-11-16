@@ -81,6 +81,20 @@ table(region)
 hist(insurance$charges, xlab = 'charges', main = 'Charges', col = 'yellow')
 ```
 
+Step 5
+
+Describe what can you see from those graphs.
+
+Average age 39
+
+Male require insurance more than female
+
+Average BMI is 30.6634, so slightly overweight
+
+Mostly the people doesn't have any children
+
+So basically, if you have many children, you smoke and you have extra weight your charges will be the highest:-)
+
 
 
 
