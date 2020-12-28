@@ -2,11 +2,13 @@
 title: "Medical Cost Personal Datasets"
 output: html_notebook
 ---
-###Step 1
+
+## STAGE 1
+#### Step 1
 
 Read your dataset. Done
 
-###Step 2
+#### Step 2
 
 Write a description of your dataset:
 • What is the topic?
@@ -50,13 +52,13 @@ REGION - dependent variable, categorical
 CHARGES -dependent continuous variable, quantitative
 
 
-###Step 3
+#### Step 3
 
 Look for missing values, or errors (NA etc) in the dataset. 
 
 Dataset looks complete
 
-Step 4
+#### Step 4
 
 Do some data visualization (distribution graphs).
 ```{r}
@@ -69,6 +71,14 @@ knitr::opts_chunk$set(error = TRUE)
 insurance <- read.csv("insurance.csv", header = TRUE, sep = ",")
 hist(insurance$age, xlab = 'age', main = 'Age', col = 'blue', include = TRUE)
 ```
+```{r}
+for (i in 1) {
+  d <- density(insurance.new[,i])
+  plot(d, type="n", main=colnames[i])
+  polygon(d, col="red", border="gray")
+}
+```
+
 
 ```{r}
 table(insurance$sex)
@@ -78,16 +88,46 @@ table(insurance$sex)
 hist(insurance$bmi, xlab = 'bmi', main = 'BMI', col = 'red')
 ```
 ```{r}
+for (i in 3) {
+  d <- density(insurance.new[,i])
+  plot(d, type="n", main=colnames[i])
+  polygon(d, col="red", border="gray")
+}
+```
+
+
+
+```{r}
 hist(insurance$children, xlab = 'children', main = 'Children', col = 'green')
 ```
+```{r}
+for (i in 4) {
+  d <- density(insurance.new[,i])
+  plot(d, type="n", main=colnames[i])
+  polygon(d, col="red", border="gray")
+}
+```
+
+
+
 ```{r}
 table(insurance$region)
 ```
 ```{r}
 hist(insurance$charges, xlab = 'charges', main = 'Charges', col = 'yellow')
 ```
+```{r}
+for (i in 7) {
+  d <- density(insurance.new[,i])
+  plot(d, type="n", main=colnames[i])
+  polygon(d, col="red", border="gray")
+}
+```
 
-###Step 5
+
+
+
+#### Step 5
 
 Describe what can you see from those graphs.
 
@@ -100,6 +140,435 @@ Average BMI is 30.6634, so slightly overweight
 Mostly the people doesn't have any children
 
 So basically, if you have many children, you smoke and you have extra weight your charges will be the highest:-)
+
+
+## STAGE 2
+#### Step 1
+
+Do some quantitive overview
+
+- compute central tendency measures (mean, mode, median, etc)
+
+Central Tendency- is a typical or central value for a probability distribution.
+
+Mean
+
+It is the sum of all values divided by the total number of values.
+```{r}
+#Mean
+mean1<-mean(insurance$age)
+mean1
+```
+
+```{r}
+mean.age<-sum(insurance$age)/length(insurance$age)
+mean.age
+```
+
+```{r}
+mean.bmi<-mean(insurance$bmi)
+mean.bmi
+```
+
+```{r}
+mean.children<-mean(insurance$children)
+mean.children
+```
+
+```{r}
+mean.charges<-mean(insurance$charges)
+mean.charges
+```
+
+
+Median
+
+It is the middle number in an ordered data set.
+```{r}
+# Median
+median1<-median(insurance$age)
+median1
+```
+
+```{r}
+median.func<-function (ar) {
+  ar.sorted<-sort(ar)
+  l<-length(ar.sorted)
+  r<-(ar.sorted[floor(1/2)]+ar.sorted[ceiling(1/2)])/2
+}
+median.func(insurance$age)
+
+```
+
+```{r}
+median.children<-median.func(insurance$children)
+median.children
+```
+
+```{r}
+median.bmi<-median.func(insurance$bmi)
+median.bmi
+```
+
+```{r}
+median.charges<-median.func(insurance$charges)
+median.charges
+```
+
+
+Mode
+The mode is the value that has highest number of occurrences in a set of data. Unike mean and median, mode can have both numeric and character data (the most frequent value.).
+
+```{r}
+# Create the function.
+getmode <- function(v) {
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+getmode(insurance$region)
+getmode(insurance$sex)
+getmode(insurance$smoker)
+```
+
+```{r}
+#Summary of Central Tendency Measures
+summary(insurance)
+```
+
+
+Trimean
+
+It is an estimate of central tendency, and is calculated as a weighted average of the median and the two quartiles of a set of values (weighted average of 25th, 50th and 75th percentils)
+
+
+- compute variability measures (Range, IQR, Standard Deviation, Variance)
+
+Range
+The diffrence between the highest and lowest values
+```{r}
+range(insurance$age)
+```
+```{r}
+range(insurance$bmi)
+```
+```{r}
+range(insurance$children)
+```
+```{r}
+range(insurance$charges)
+```
+
+
+Interquartile Range
+The range of the middle half of a distribution
+
+```{r}
+IQR(insurance$age)
+```
+```{r}
+IQR(insurance$bmi)
+```
+
+```{r}
+IQR(insurance$children)
+```
+```{r}
+IQR(insurance$charges)
+```
+
+
+Standard Deviation
+Average distance from the mean
+```{r}
+head(insurance)
+```
+```{r}
+sapply(insurance[,1:7], sd)
+```
+
+```{r}
+# to compute Standard deviation we can also use the following formula (we compute the square root of our variance):
+  sqrt(var(insurance))
+```
+
+
+
+
+Variance
+Average of squared distances from the mean.
+```{r}
+var(insurance)
+```
+
+
+
+
+#### Step 2
+
+Write a summary
+ 
+ - What can you use from those central tendency/ variability measures?
+ - Does it corresponds to visual picture of distribution?
+ - What you can conclude from this analysis?
+ 
+ While a measure of central tendency describes the typical value, measures of variability define how far away the data points tend to fall from the center. The variability in the context of a distribution of values.
+ Calculations of central tendency and variability measures corresponds the visual distribution.The conclusion is that data sets could have the same central tendency, but different levels of variability or vice versa. Together they can give us completed picture of our data.
+ 
+ 
+ 
+## Stage 3
+ 
+#### Step 1
+ 
+ Try to find out, if there are some linear relationships between variables:
+ 
+- Pick up only those variable, which are suitable. Remove outliers if required.
+```{r}
+input <- insurance[,c('age','charges')]
+print(head(input))
+```
+
+
+```{r}
+
+
+input <- insurance[,c('age','charges')]
+print(head(input))
+plot(x = input$age, y = input$charges,
+     xlab = "Age",
+     ylab = "Charges",
+     xlim = c(15, 70),
+     ylim = c(1000,15000),
+     main = "Age vs Charges"
+)
+```
+In this plot we can see that variables are closely connected. With age increasing the charges are also increased.
+Relationship between the independent and dependent variable supposed to be linear, like in our plot.
+
+
+
+```{r}
+# removing outliers with IQR
+# find Q1, Q3 and IQR for values in column Age
+Q1 <-quantile(insurance$age, .25)
+Q3 <- quantile(insurance$age, .75)
+IQR <- IQR(insurance$age)
+
+# only keep rows that have values within 1.5*IQR of Q1 and Q3
+no_outliers <- subset(insurance, insurance$age> (Q1 - 1.5*IQR) & insurance$age< (Q3 + 1.5*IQR))
+
+#view row and column count of new data  frame
+dim(no_outliers)
+```
+
+```{r}
+# removing outliers with IQR
+# find Q1, Q3 and IQR for values in column Age
+Q1 <-quantile(insurance$charges, .25)
+Q3 <- quantile(insurance$charges, .75)
+IQR <- IQR(insurance$charges)
+
+# only keep rows that have values within 1.5*IQR of Q1 and Q3
+no_outliers <- subset(insurance, insurance$charges> (Q1 - 1.5*IQR) & insurance$charges< (Q3 + 1.5*IQR))
+
+#view row and column count of new data  frame
+dim(no_outliers)
+```
+
+```{r}
+input <- insurance[,c('bmi','charges')]
+print(head(input))
+plot(x = input$bmi, y = input$charges,
+     xlab = "BMI",
+     ylab = "Charges",
+     xlim = c(1, 70),
+     ylim = c(1000,60000),
+     main = "BMI vs Charges"
+)
+```
+In this plot we can see that relationship is not linear and the high BMI is not affecting the charges significantly. 
+
+
+```{r}
+input <- insurance[,c('children','charges')]
+print(head(input))
+plot(x = input$children, y = input$charges,
+     xlab = "Children",
+     ylab = "Charges",
+     xlim = c(1, 5),
+     ylim = c(1000,60000),
+     main = "Children vs Charges"
+)
+```
+In this plot we can see that amount of children is slightly affecting the charges, the more children person has the less are the charges.
+
+
+- Compute correlation matrix. It would be nice if you can express it visually.
+
+
+
+```{r}
+library("corrplot")
+cor(insurance[sapply(insurance, is.numeric)])
+
+#We can see that the highest correlation based on Pearson, is between Age and Charges
+
+```
+```{r}
+library(GGally)
+corrplot.mixed(cor(mat_1), title = "Correlations between numeric variables", order="hclust", tl.col="black")
+```
+In this plot the size and shade of each circle represents the strength of each relationship, while the color represents the direction, either negative or positive.
+
+
+
+```{r}
+library(PerformanceAnalytics)
+chart.Correlation(mat_1, histogram=TRUE, pch=20)
+```
+In this plot we can see the following information:
+- The strength of the relationship.
+- The significance of the relationship.
+- Histogram with kernel density estimation and rug plot.
+- Scatter plot with fitted line.
+
+ 
+
+
+## Step 2
+Pay attention to dependent variable:
+
+- From correlation analysis you know which variables have high correlation with your
+dependent variable.
+
+Highest correlation we have is between the Age and the Charges.
+
+- Draw the scatter plots "Dependent variable vs independent variable"
+
+```{r}
+input <- insurance[,c('age','charges')]
+
+plot(x = input$age, y = input$charges,
+     xlab = "Age",
+     ylab = "Charges",
+     xlim = c(15, 70),
+     ylim = c(1000,15000),
+     main = "Dependent vs independent variable"
+)
+```
+
+
+- Write down your observations
+Based on our correlation analyses and scatter plot, we can conclude that these two variables share a common covariance and are homoscedastic.
+
+
+## Step 3
+Pick up one pair of "dependent variable vs independent variable"
+- Construct the linear regression model.
+
+```{r}
+data <- lm(insurance$age ~ insurance$charges)
+summary(data)
+```
+
+p-value 2.2e-16, which is 2.2 X 10 ^ -16
+If we test with 95% confidence or 5% significance, P-value of 2.2 X 10 ^-16 is very less compared to 5%=0.05. So we will reject the null hypothesis
+
+```{r}
+# Just as a sample to compare with the complete dataset
+data <- lm(age ~., data = insurance)
+summary(data)
+```
+F-statistic - Used to estimate the significance of a regression model as a whole. The higher the parameter value, the better it is.
+t value - A criteria based on the Student's t distribution. The value of the parameter in linear regression indicates the significance of the factor; it is generally accepted that at t> 2 the factor is significant for the model.
+p value - This is the probability that the hypothesis that the independent variables do not explain the dynamics of the dependent variable is true zero. If the p value is below the threshold (.05 or .01 for the most demanding), then the null hypothesis is false. The lower the better)
+
+
+- Draw the scatter plot "with line"
+
+```{r}
+input <- insurance[,c('age','charges')]
+plot(x = input$age, y = input$charges,
+     xlab = "Age",
+     ylab = "Charges",
+     xlim = c(15, 70),
+     ylim = c(1000,15000),
+     main = "Age vs Charges")
+
+abline(lm(input$charges ~ input$age, data = insurance), col="blue")
+linearReg <- lm(input$age ~ input$charges, data = insurance)
+print(linearReg)
+```
+
+
+```{r}
+input3<- insurance[,c('bmi','charges')]
+plot(x = input3$bmi, y = input3$charges,
+     xlab = "BMI",
+     ylab = "Charges",
+     #    xlim = c(1, 70),
+     #    ylim = c(1000,60000),
+     main = "BMI vs Charges"
+)
+
+abline(lm(input3$charges ~ input3$bmi, data = insurance), col = "green")
+linearReg <- lm(input3$bmi ~ input3$charges, data = insurance)
+print(linearReg)
+```
+
+```{r}
+# On this plot we can see weak relationship
+input2 <- insurance[,c('children','charges')]
+plot(x = input2$children, y = input2$charges,
+     xlab = "Children",
+     ylab = "Charges",
+#    xlim = c(1, 5),
+#    ylim = c(1000,60000),
+     main = "Children vs Charges"
+)
+abline(lm(input2$charges ~ input2$children, data = insurance), col = "red")
+linearReg <- lm(input2$children ~ input2$charges, data = insurance)
+print(linearReg)
+```
+
+
+```{r}
+# as an Example, want to show the plot there are no relationship
+
+input4<- insurance[,c('bmi','age')]
+plot(x = input4$bmi, y = input4$age,
+     xlab = "BMI",
+     ylab = "Age",
+     #    xlim = c(1, 70),
+     #    ylim = c(1000,60000),
+     main = "BMI vs Age"
+)
+
+abline(lm(input4$age ~ input4$bmi, data = insurance), col = "green")
+linearReg <- lm(input4$bmi ~ input4$age, data = insurance)
+print(linearReg)
+```
+
+- Write down your observations
+
+If we analyze the highest correlation that we have (Ages and Charges), we can see the positive relationship. When the Age is increasing then we see the Charges are also increasing accordingly. The correlation between them is 0.2990082 and it is the highest in out table of variables.
+
+
+## Step 4
+- Try regression with several variables, if possible.
+- Additional: try other regression algorithms.
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
 
 
 
