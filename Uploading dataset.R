@@ -1,12 +1,14 @@
 #check the working directory
 getwd()
 
+
 #import .cvs file to your Global Enviroment
 insurance <- read.csv("insurance.csv", header = TRUE, sep = ",")
 
 insurance
 
 head(insurance)
+str(insurance)
 
 #visualizing data r - plot example
 plot(insurance$age)
@@ -160,6 +162,25 @@ for (i in 1) {
 }
 boxplot(insurance$age, horizontal = TRUE, main = "Medidcal Insurance")
 
+------
+
+par(mfrow = c(1,2)) # combine the two plots
+par("mar")
+par(mar=c(1,1,1,1))
+hist(insurance$charges, main = "Histogram of charges", col = "yellow")
+plot(density(insurance$charges), main = "Density plot of charges")
+polygon(density(insurance$charges), col = "red")
+
+
+
+par(mfrow = c(1,3))
+barplot(table(insurance$sex), main = "sex")
+barplot(table(insurance$smoker), main = "smoker")
+barplot(table(insurance$region), main = "region")
+
+
+
+
 -------
 #creating scatterplot
 
@@ -186,6 +207,33 @@ no_outliers <- subset(insurance, insurance$age> (Q1 - 1.5*IQR) & insurance$age< 
 #view row and column count of new data  frame
 dim(no_outliers)
 
+# to check for outliers with boxplot
+par(mfrow = c(1,3))
+par("mar")
+par(mar=c(1,1,1,1))
+boxplot(insurance$age, main = "Histogram of age")
+boxplot(insurance$bmi, main = "Histogram of bmi")
+boxplot(insurance$children, main = "Histogram of children")
+
+
+# removing outliers with IQR
+# find Q1, Q3 and IQR for values in column Age
+Q1 <-quantile(insurance$bmi, .25)
+Q3 <- quantile(insurance$bmi, .75)
+IQR <- IQR(insurance$bmi)
+
+# only keep rows that have values within 1.5*IQR of Q1 and Q3
+no_outliers <- subset(insurance, insurance$bmi> (Q1 - 1.5*IQR) & insurance$bmi< (Q3 + 1.5*IQR))
+
+#view row and column count of new data  frame
+dim(no_outliers)
+
+insurance_2 <- no_outliers(insurance)
+str(insurance_2)
+
+
+insurance_2 <- subset(insurance, insurance$bmi> (Q1 - 1.5*IQR) & insurance$bmi< (Q3 + 1.5*IQR))
+str(insurance_2)
 
 
 input <- insurance[,c('age','charges')]
@@ -214,8 +262,11 @@ cor(insurance$age, insurance$charges, method = "pearson")
 cor(insurance$age, insurance$charges, method = "spearman")
 
 library("corrplot")
-mat_1 <- as.dist(cor((insurance[sapply(insurance, is.numeric)])))
+mat_1 <- as.dist(cor((insurance_2[sapply(insurance_2, is.numeric)])))
 mat_1
+library(GGally)
+
+corrplot.mixed(cor(mat_1), title = "Correlations between numeric variables", order="hclust", tl.col="black")
 
 library(corrgram)
 library(hmisc)
@@ -227,7 +278,7 @@ corrclass <- rcorr(as.matrix(insurance))
 print(corrclass)
 
 library("corrplot")
-mat_1 <- as.matrix(cor((insurance[sapply(insurance, is.numeric)])))
+mat_1 <- as.matrix(cor((insurance_2[sapply(insurance_2, is.numeric)])))
 mat_1
 
 corrplot(mat_1)
@@ -425,4 +476,18 @@ print(linearReg)
 
 cor(insurance[sapply(insurance, is.numeric)])
 
+model <- lm(charges ~ age + bmi + children, data = insurance)
+summary(model)
 
+
+par(mfrow = c(1,2)) # combine the two plots
+par("mar")
+par(mar=c(1,1,1,1))
+hist(insurance$charges, main = "Histogram of charges", col = "yellow")
+plot(density(insurance$charges), main = "Density plot of charges")
+polygon(density(insurance$charges), col = "red")
+
+par(mfrow = c(1,3))
+barplot(table(insurance$sex), main = "sex")
+barplot(table(insurance$smoker), main = "smoker")
+barplot(table(insurance$region), main = "region")
