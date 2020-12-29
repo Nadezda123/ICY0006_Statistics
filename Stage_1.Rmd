@@ -401,6 +401,7 @@ cor(insurance_2[sapply(insurance_2, is.numeric)])
 
 ```
 ```{r}
+#Correlation matrix visualization 
 library(GGally)
 library("corrplot")
 mat_1 <- as.matrix(cor((insurance_2[sapply(insurance_2, is.numeric)])))
@@ -423,7 +424,7 @@ In this plot we can see the following information:
 - Scatter plot with fitted line.
 
 ```{r}
-#we can also create another version of complete Scatter plot matrix
+#we can also create another version of complete Scatter plot matrix (excluding charges)
 library(psych)
 pairs.panels(insurance_2[c("age", "sex", "bmi", "children", "smoker", "region")], digits = 2, cor = TRUE, main = "Insurance Matrix")
 ```
@@ -559,16 +560,17 @@ If we analyze the highest correlation that we have (Ages and Charges), we can se
 #compute the model coefficients
 multiple_model <- lm(charges ~ age + sex + bmi + children + smoker + region, data = insurance_2)
 summary(multiple_model)
+plot(multiple_model)
 ```
 Interpretation
 The first step in interpreting the multiple regression analysis is to examine the F-statistic and the associated p-value.
 In our plot, it can be seen that p-value of the F-statistic is < 2.2e-16 for the Age, which is highly significant. This means that, Age, is one of the predictor variables that significantly related to the outcome variable.
 Based on coefficients table we can see that t value evaluates whether or not there is significant association between the predictor and the outcome variable, that is whether the beta coefficient of the predictor is significantly different from zero. Also we can see that changes in Age and less in bmi are associated to changes in charges while changes in children is not significantly associated with sales.
 
-Because children variable is not significant, we can remove it from our model and recreate it without it.
+Because children and region variables are not significant, we can remove it from our model and recreate it without it.
 
 ```{r}
-#commpute the model coefficients
+#compute the model coefficients
 model <- lm(charges ~ age + bmi, data = insurance_2)
 summary(model)
 
@@ -593,7 +595,7 @@ In our plot, with age and bmi predicator variables, the adjusted R2 = 0,12, mean
  
 
 ## Stage 4
-#### Step 1
+Step 1
 
 - Pick up a lottery. For example, https://www.eurojackpot.com/ etc. Do not pick up
 bingo type lotteries.
@@ -613,7 +615,8 @@ I am not familiar with lottery games.
 So I searched for the most popular lotteries in the world (https://www.wonderslist.com/top-10-best-lottery-games-world/)
 I decided to go with US Powerball.
 
-Based on the rules, you must select five numbers from a pool between 1 and 69 and one Powerball between 1 and 26. The Powerball you select can be the same as one of the five main numbers. If you match all five numbers and the Powerball, you win the top prize. By guessing just the main numbers and not the Powerball, you can qualify for the $1 million second prize. The order of the balls is not important, so for my calculations I will use combinations and not permutations.
+Based on the rules, you must select five numbers from a pool between 1 and 69 and one Powerball between 1 and 26. The Powerball you select can be the same as one of the five main numbers. If you match all five numbers and the Powerball, you win the top prize. By guessing just the main numbers and not the Powerball, you can qualify for the $1 million second prize. 
+The order of the balls is not important, so for my calculations I will use combinations and not permutations.
 
 ***C(69,5) = 69!/(5!(69-5)!) = 11238513 So, probability of the wining the prize if you guess 5 numbers is 1/11238513 ≈= 0.000000089
 And there are 26 ways to select the Powerball, so resulting in 26 x 11238513 = 292201338 possible selections. The probability to win the main prize, by guessing all 6 numbers is 1/292201338
@@ -621,43 +624,51 @@ And there are 26 ways to select the Powerball, so resulting in 26 x 11238513 = 2
 We  can calculate the rest of the possibilities
 
 ***Guessing all five balls but not the Powerball:
+
 25/292201338 ≈= 0.0000000856
 
 ***Guessing four of the five balls and the Powerball:
+
 C(5,4) = 5 ways to guess four of the five. The 5th ball is one of the remaining 64 that were not drawn, so C(64,1) = 64 ways for this to happen. There is only 1 way to guess Powerball.
 5 x 64 x 1 = 320 ways to guess four of the five balls and Powerball. 
 Probability of this to happen is 320/292201338 ≈= 0.0000010951
 
 ***Guessing four of the five balls but not the Powerball:
+
 C(5,4) = 5 ways to guess four of the five. The 5th ball is one of the remaining 64 that were not drawn, so C(64,1) = 64 ways for this to happen. This time, there 25 ways to not guess the Powerball.
 5 x 64 x 25 = 8000 ways to guess four of the five balls and not the Powerball. 
 Probability of this to happen is 8000/292201338 ≈= 0.0000273784
 
 ***Guessing three of the five balls and the Powerball:
+
 C(5,3) = 10 ways to guess three of the five. The remaining balls are the ones of the remaining 64 that were not drawn, so C(64,2) = 2016 ways for this to happen. There is only one way to guess Powerball.
 10 x 2016 x 1 = 20160 ways to guess three of the five balls and Powerball. 
 Probability of this to happen is 20160/292201338 ≈= 0.0000689935
 
 ***Guessing three of the five balls but not the Powerball:
+
 C(5,3) = 10 ways to guess three of the five. The remaining balls are the ones of the remaining 64 that were not drawn, so C(64,2) = 2016 ways for this to happen. This time, there 25 ways to not guess the Powerball.
 10 x 2016 x 25 = 504000 ways to guess three of the five balls and not the Powerball. 
 Probability of this to happen is 504000/292201338 ≈= 0.0017248381
 
 ***Guessing two of the five balls and the Powerball:
+
 C(5,2) = 10 ways to guess two of the five. The remaining balls are the ones of the remaining 64 that were not drawn, so C(64,3) = 41664 ways for this to happen. There is only one way to guess Powerball.
 10 x 41664 x 1 = 416640 ways to guess two of the five balls and Powerball. 
 Probability of this to happen is 416640/292201338 ≈= 0.0014258662
 
 ***Guessing one of the five balls and the Powerball:
+
 C(5,4) = 5 ways to guess one of the five. The remaining balls are the ones of the remaining 64 that were not drawn, so C(64,4) = 635376 ways for this to happen. There is only one way to guess Powerball.
 5 x 635376 x 1 = 3176880 ways to guess one of the five balls and Powerball. 
 Probability of this to happen is 3176880/292201338 ≈= 0.0108722295
 
 Guessing just the Powerball, but none of the other balls:
+
 It is possible to win if non of five balls guessed, but only Powerball guessed. So C(64,5) = 7624512 ways for this to happen. There is only one way to guess Powerball. Meaning that we have 7624512 ways not to guess any balls except for the Powerball.
 Probability of this to happen is 7624512/292201338 ≈= 0.0260933507
 
-After calculating the above probabilities of the winning in the US Powerball lottery, I think everyone can see that the chance to win the main price so small that it is close to impossible. Very nice exercise! Now I can advice my friends not to buy the lottery tickets:-)
+After calculating the above probabilities of the winning in the US Powerball lottery, I think everyone can see that the chance to win the main price is so small that it is close to impossible. Very nice exercise! Now I can advice my friends not to buy the lottery tickets:-)
 
 
 ## Stage 5
@@ -684,9 +695,80 @@ results.
 - Write report.
 
 
+When we built our linear regression model based on full dataset it is hard to predict how it will perform with new data.
+So I will split our dataset into a 80/20 sample (training/test). 
+By calculating accuracy measures (like min_max accuracy) and error rates (MAPE or MSE), we will see the prediction accuracy of the model.
+
+```{r}
+#creating the training and testing data
+# setting seed to reproduce results of random sampling
+set.seed(100)
+trainingRowIndex <- sample(1:nrow(insurance_2), 0.8*nrow(insurance_2))
+trainingData <- insurance_2[trainingRowIndex, ] #model training data
+testData <- insurance_2[-trainingRowIndex, ]    # test data
+
+
+str(trainingData)
+str(testData)
+
+```
+We can see that our Training set contains 1063 observations
+and Test set has 266 observations
+
+
+```{r}
+#build the model on the training data
+lmMod <-lm(charges ~ age, data=trainingData) #build the model
+chargesPred <- predict(lmMod, testData) # predict charges
+
+#model summary
+summary(lmMod)
+#calculate akaike information criterion
+AIC(lmMod)
+
+
+```
+
+```{r}
+plot(x = trainingData$age, y = trainingData$charges,
+     xlab = "Age",
+     ylab = "Charges",
+     xlim = c(15, 70),
+     ylim = c(1000,15000),
+     main = "Age vs Charges")
+
+abline(lm(trainingData$charges ~ trainingData$age, data = trainingData), col="blue")
+linearReg <- lm(trainingData$age ~ trainingData$charges, data = trainingData)
+print(linearReg)
+```
 
 
 
+NOw we can calculate prediction accuracy and error rate. A higher correlation accuracy implies that the actuals and predicted values have similar directional movement.
+```{r}
+# making actuals_predicteds dataframe
+actuals_preds <- data.frame(cbind(actuals=testData$charges, predicteds=chargesPred))
+correlation_accuracy <- cor(actuals_preds)
+head(actuals_preds)
+```
+
+MinMaxAccuracy = mean(min(actuals, predicteds)/max(actuals, predicteds)
+```{r}
+#Min-Max Calculations
+min_max_accuracy <- mean(apply(actuals_preds, 1, min) / apply(actuals_preds, 1, max))  
+min_max_accuracy
+```
+MeanAbsolutePercentageError(MAPE) = mean(abc(predicteds?actuals)/actuals)
+```{r}
+#MAPE Calculations
+mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_preds$actuals)  
+mape
+```
+
+Also I found that we can compute all the error metrics in one shot
+```{r}
+DMwR::regr.eval(actuals_preds$actuals, actuals_preds$predicteds)
+```
 
  
  

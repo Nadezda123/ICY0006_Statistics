@@ -502,4 +502,48 @@ summary(multiple_model)
 library(psych)
 pairs.panels(insurance_2[c("age", "sex", "bmi", "children", "smoker", "region")], digits = 2, cor = TRUE, main = "Insurance Matrix")
 
+install.packages("caTools")
+
+#creating the training and testing data
+# setting seed to reproduce results of random sampling
+set.seed(100)
+trainingRowIndex <- sample(1:nrow(insurance_2), 0.8*nrow(insurance_2))
+trainingData <- insurance_2[trainingRowIndex, ] #model training data
+testData <- insurance_2[-trainingRowIndex, ]    # test data
+
+#build the model on the training data
+lmMod <-lm(charges ~ age, data=trainingData) #build the model
+chargesPred <- predict(lmMod, testData) # predict charges
+
+#model summary
+summary(lmMod)
+#calculate akaike information criterion
+AIC(lmMod)
+
+#we can calculate prediction accuracy and error rates
+# make actuals_predicteds dataframe
+actuals_preds <- data.frame(cbind(actuals=testData$charges, predicteds=chargesPred))
+correlation_accuracy <- cor(actuals_preds)
+head(actuals_preds)
+
+
+#Min-Max Calculations
+min_max_accuracy <- mean(apply(actuals_preds, 1, min) / apply(actuals_preds, 1, max))  
+min_max_accuracy
+
+#MAPE Calculations
+mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_preds$actuals)  
+mape
+
+install.packages("DMwR")
+DMwR::regr.eval(actuals_preds$actuals, actuals_preds$predicteds)
+
+install.packages("DAAG")
+library(DAAG)
+#cross validation plot
+
+cvResults <- suppressWarnings(CVlm(df=insurance_2, form.lm=charges ~ age, m=5, dots=FALSE, seed=29, legend.pos="topleft", printit=FALSE, main="Small symbols are predicted values while bigger ones are actuals."));
+attr(cvResults, 'ms')   
+
+summary(insurance_2)
 
