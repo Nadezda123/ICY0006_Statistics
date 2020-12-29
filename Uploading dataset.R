@@ -351,6 +351,8 @@ plot(x = input$age, y = input$charges,
      main = "Age vs Charges")
 
 
+
+
 install.packages("readr")
 library(Hmisc)
 library(readr)
@@ -491,3 +493,13 @@ par(mfrow = c(1,3))
 barplot(table(insurance$sex), main = "sex")
 barplot(table(insurance$smoker), main = "smoker")
 barplot(table(insurance$region), main = "region")
+
+
+multiple_model <- lm(charges ~ age + sex + bmi + children + smoker + region, data = insurance_2)
+summary(multiple_model)
+
+
+library(psych)
+pairs.panels(insurance_2[c("age", "sex", "bmi", "children", "smoker", "region")], digits = 2, cor = TRUE, main = "Insurance Matrix")
+
+

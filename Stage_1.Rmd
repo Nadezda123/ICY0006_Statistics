@@ -412,6 +412,7 @@ In this plot the size and shade of each circle represents the strength of each r
 
 
 ```{r}
+# to check the numeric variables relationship
 library(PerformanceAnalytics)
 chart.Correlation(mat_1, histogram=TRUE, pch=20)
 ```
@@ -421,7 +422,12 @@ In this plot we can see the following information:
 - Histogram with kernel density estimation and rug plot.
 - Scatter plot with fitted line.
 
- 
+```{r}
+#we can also create another version of complete Scatter plot matrix
+library(psych)
+pairs.panels(insurance_2[c("age", "sex", "bmi", "children", "smoker", "region")], digits = 2, cor = TRUE, main = "Insurance Matrix")
+```
+Based on the plot above, we can see that there no strong correlations between the variables, r < 0.2
 
 
 ## Step 2
@@ -435,7 +441,7 @@ Highest correlation we have is between the Age and the Charges.
 - Draw the scatter plots "Dependent variable vs independent variable"
 
 ```{r}
-input <- insurance[,c('age','charges')]
+input <- insurance_2[,c('age','charges')]
 
 plot(x = input$age, y = input$charges,
      xlab = "Age",
@@ -455,35 +461,29 @@ Based on our correlation analyses and scatter plot, we can conclude that these t
 Pick up one pair of "dependent variable vs independent variable"
 - Construct the linear regression model.
 
-
+Linear Regression is used predict or estimate the value of a dependent variable by modelling it against one or more independent variables.
 
 ```{r}
 #simple linear regression
-data <- lm(insurance$charges ~ insurance$age)
+data <- lm(insurance_2$charges ~ insurance_2$age)
 summary(data)
-```
-p-value 2.2e-16, which is 2.2 X 10 ^ -16
-If we test with 95% confidence or 5% significance, P-value of 2.2 X 10 ^-16 is very less compared to 5%=0.05. So we will reject the null hypothesis
+
+sigma(data)/mean(insurance_2$charges)
 
 
-```{r}
-# Just as a sample to compare with the complete dataset
-data <- lm(age ~., data = insurance)
-summary(data)
 ```
 F-statistic - Used to estimate the significance of a regression model as a whole. The higher the parameter value, the better it is.
 t value - A criteria based on the Student's t distribution. The value of the parameter in linear regression indicates the significance of the factor; it is generally accepted that at t> 2 the factor is significant for the model.
 p value - This is the probability that the hypothesis that the independent variables do not explain the dynamics of the dependent variable is true zero. If the p value is below the threshold (.05 or .01 for the most demanding), then the null hypothesis is false. The lower the better)
-```{r}
-#The error rate can be estimated by dividing the RSE by the mean outcome variable
-sigma(data)/mean(insurance$charges)
-```
-Corresponding to 87% error rate
+In our plot the p-value is 2.2e-16, which is 2.2 X 10 ^ -16
+If we test with 95% confidence or 5% significance, P-value of 2.2 X 10 ^-16 is very less compared to 5%=0.05. So we will reject the null hypothesis
+
+
 
 - Draw the scatter plot "with line"
 
 ```{r}
-input <- insurance[,c('age','charges')]
+input <- insurance_2[,c('age','charges')]
 plot(x = input$age, y = input$charges,
      xlab = "Age",
      ylab = "Charges",
@@ -491,15 +491,15 @@ plot(x = input$age, y = input$charges,
      ylim = c(1000,15000),
      main = "Age vs Charges")
 
-abline(lm(input$charges ~ input$age, data = insurance), col="blue")
-linearReg <- lm(input$age ~ input$charges, data = insurance)
+abline(lm(input$charges ~ input$age, data = insurance_2), col="blue")
+linearReg <- lm(input$age ~ input$charges, data = insurance_2)
 print(linearReg)
 ```
 
 
 ```{r}
 # On this plot we can see weak relationship
-input3<- insurance[,c('bmi','charges')]
+input3<- insurance_2[,c('bmi','charges')]
 plot(x = input3$bmi, y = input3$charges,
      xlab = "BMI",
      ylab = "Charges",
@@ -508,14 +508,14 @@ plot(x = input3$bmi, y = input3$charges,
      main = "BMI vs Charges"
 )
 
-abline(lm(input3$charges ~ input3$bmi, data = insurance), col = "green")
-linearReg <- lm(input3$bmi ~ input3$charges, data = insurance)
+abline(lm(input3$charges ~ input3$bmi, data = insurance_2), col = "green")
+linearReg <- lm(input3$bmi ~ input3$charges, data = insurance_2)
 print(linearReg)
 ```
 
 ```{r}
 
-input2 <- insurance[,c('children','charges')]
+input2 <- insurance_2[,c('children','charges')]
 plot(x = input2$children, y = input2$charges,
      xlab = "Children",
      ylab = "Charges",
@@ -523,8 +523,8 @@ plot(x = input2$children, y = input2$charges,
 #    ylim = c(1000,60000),
      main = "Children vs Charges"
 )
-abline(lm(input2$charges ~ input2$children, data = insurance), col = "red")
-linearReg <- lm(input2$children ~ input2$charges, data = insurance)
+abline(lm(input2$charges ~ input2$children, data = insurance_2), col = "red")
+linearReg <- lm(input2$children ~ input2$charges, data = insurance_2)
 print(linearReg)
 ```
 
@@ -532,7 +532,7 @@ print(linearReg)
 ```{r}
 # as an Example, want to show the plot there are no relationship
 
-input4<- insurance[,c('bmi','age')]
+input4<- insurance_2[,c('bmi','age')]
 plot(x = input4$bmi, y = input4$age,
      xlab = "BMI",
      ylab = "Age",
@@ -541,14 +541,14 @@ plot(x = input4$bmi, y = input4$age,
      main = "BMI vs Age"
 )
 
-abline(lm(input4$age ~ input4$bmi, data = insurance), col = "green")
-linearReg <- lm(input4$bmi ~ input4$age, data = insurance)
+abline(lm(input4$age ~ input4$bmi, data = insurance_2), col = "green")
+linearReg <- lm(input4$bmi ~ input4$age, data = insurance_2)
 print(linearReg)
 ```
 
 - Write down your observations
 
-If we analyze the highest correlation that we have (Ages and Charges), we can see the positive relationship. When the Age is increasing then we see the Charges are also increasing accordingly. The correlation between them is 0.2990082 and it is the highest in out table of variables.
+If we analyze the highest correlation that we have (Ages and Charges), we can see the positive relationship. When the Age is increasing then we see the Charges are also increasing accordingly. The correlation between them is 0.302 and it is the highest in out table of variables.
 
 
 ## Step 4
@@ -556,9 +556,9 @@ If we analyze the highest correlation that we have (Ages and Charges), we can se
 
 ```{r}
 #multiple regression
-#commpute the model coefficients
-model <- lm(charges ~ age + bmi + children, data = insurance)
-summary(model)
+#compute the model coefficients
+multiple_model <- lm(charges ~ age + sex + bmi + children + smoker + region, data = insurance_2)
+summary(multiple_model)
 ```
 Interpretation
 The first step in interpreting the multiple regression analysis is to examine the F-statistic and the associated p-value.
@@ -569,9 +569,15 @@ Because children variable is not significant, we can remove it from our model an
 
 ```{r}
 #commpute the model coefficients
-model <- lm(charges ~ age + bmi, data = insurance)
+model <- lm(charges ~ age + bmi, data = insurance_2)
 summary(model)
+
+#The error rate can be estimated by dividing the RSE by the mean outcome variable
+sigma(model)/mean(insurance$charges)
 ```
+The RSE estimate gives a measure of error of prediction. The lower the RSE, the more accurate the model.
+Corresponding to 85% error rate, but still better than in the simple model, where RSE was 86% error rate.
+
 ```{r}
 #the confidence interval of the model coefficient
 confint(model)
@@ -580,20 +586,107 @@ To assess model accuracy, we have to take a look at other values like R2 and RSE
 In multiple linear regression, the R2 represents the correlation coefficient between the observed values of the outcome variable (y) and the fitted (i.e., predicted) values of y. For this reason, the value of R will always be positive and will range from zero to one. 
 R2 represents the proportion of variance, in the outcome variable y, that may be predicted by knowing the value of the x variables. An R2 value close to 1 indicates that the model explains a large portion of the variance in the outcome variable.
 The adjustment in the “Adjusted R Square” value in the summary output is a correction for the number of x variables included in the prediction model.
-In our plot, with age and bmi predicator variables, the adjusted R2 = 0,12, meaning that "12% of the variance in the measure of charges can be predicted by age and bmi. In comparison, this model is better than our simple liner regression model with only age, which had an adjusted R2 of 0.08872.
-
-The RSE estimate gives a measure of error of prediction. The lower the RSE, the more accurate the model.
-
-```{r}
-#The error rate can be estimated by dividing the RSE by the mean outcome variable
-sigma(model)/mean(insurance$charges)
-
-```
-Corresponding to 85% error rate, but still better than in the simple model, where RSE was 87% error rate.
+In our plot, with age and bmi predicator variables, the adjusted R2 = 0,12, meaning that "12% of the variance in the measure of charges can be predicted by age and bmi. In comparison, this model is better than our simple liner regression model with only age, which had an adjusted R2 of 0.09.
 
 
 - Additional: try other regression algorithms.
  
+
+## Stage 4
+#### Step 1
+
+- Pick up a lottery. For example, https://www.eurojackpot.com/ etc. Do not pick up
+bingo type lotteries.
+- Describe the lottery.
+- Describe the winning condition
+Step 2
+Compute the probabilities of winning for each case. For example, as in here
+https://en.wikipedia.org/wiki/Eurojackpot
+
+Step 3
+Explain your computation.
+
+Step 4
+Write a small report on that.
+
+I am not familiar with lottery games.
+So I searched for the most popular lotteries in the world (https://www.wonderslist.com/top-10-best-lottery-games-world/)
+I decided to go with US Powerball.
+
+Based on the rules, you must select five numbers from a pool between 1 and 69 and one Powerball between 1 and 26. The Powerball you select can be the same as one of the five main numbers. If you match all five numbers and the Powerball, you win the top prize. By guessing just the main numbers and not the Powerball, you can qualify for the $1 million second prize. The order of the balls is not important, so for my calculations I will use combinations and not permutations.
+
+***C(69,5) = 69!/(5!(69-5)!) = 11238513 So, probability of the wining the prize if you guess 5 numbers is 1/11238513 ≈= 0.000000089
+And there are 26 ways to select the Powerball, so resulting in 26 x 11238513 = 292201338 possible selections. The probability to win the main prize, by guessing all 6 numbers is 1/292201338
+
+We  can calculate the rest of the possibilities
+
+***Guessing all five balls but not the Powerball:
+25/292201338 ≈= 0.0000000856
+
+***Guessing four of the five balls and the Powerball:
+C(5,4) = 5 ways to guess four of the five. The 5th ball is one of the remaining 64 that were not drawn, so C(64,1) = 64 ways for this to happen. There is only 1 way to guess Powerball.
+5 x 64 x 1 = 320 ways to guess four of the five balls and Powerball. 
+Probability of this to happen is 320/292201338 ≈= 0.0000010951
+
+***Guessing four of the five balls but not the Powerball:
+C(5,4) = 5 ways to guess four of the five. The 5th ball is one of the remaining 64 that were not drawn, so C(64,1) = 64 ways for this to happen. This time, there 25 ways to not guess the Powerball.
+5 x 64 x 25 = 8000 ways to guess four of the five balls and not the Powerball. 
+Probability of this to happen is 8000/292201338 ≈= 0.0000273784
+
+***Guessing three of the five balls and the Powerball:
+C(5,3) = 10 ways to guess three of the five. The remaining balls are the ones of the remaining 64 that were not drawn, so C(64,2) = 2016 ways for this to happen. There is only one way to guess Powerball.
+10 x 2016 x 1 = 20160 ways to guess three of the five balls and Powerball. 
+Probability of this to happen is 20160/292201338 ≈= 0.0000689935
+
+***Guessing three of the five balls but not the Powerball:
+C(5,3) = 10 ways to guess three of the five. The remaining balls are the ones of the remaining 64 that were not drawn, so C(64,2) = 2016 ways for this to happen. This time, there 25 ways to not guess the Powerball.
+10 x 2016 x 25 = 504000 ways to guess three of the five balls and not the Powerball. 
+Probability of this to happen is 504000/292201338 ≈= 0.0017248381
+
+***Guessing two of the five balls and the Powerball:
+C(5,2) = 10 ways to guess two of the five. The remaining balls are the ones of the remaining 64 that were not drawn, so C(64,3) = 41664 ways for this to happen. There is only one way to guess Powerball.
+10 x 41664 x 1 = 416640 ways to guess two of the five balls and Powerball. 
+Probability of this to happen is 416640/292201338 ≈= 0.0014258662
+
+***Guessing one of the five balls and the Powerball:
+C(5,4) = 5 ways to guess one of the five. The remaining balls are the ones of the remaining 64 that were not drawn, so C(64,4) = 635376 ways for this to happen. There is only one way to guess Powerball.
+5 x 635376 x 1 = 3176880 ways to guess one of the five balls and Powerball. 
+Probability of this to happen is 3176880/292201338 ≈= 0.0108722295
+
+Guessing just the Powerball, but none of the other balls:
+It is possible to win if non of five balls guessed, but only Powerball guessed. So C(64,5) = 7624512 ways for this to happen. There is only one way to guess Powerball. Meaning that we have 7624512 ways not to guess any balls except for the Powerball.
+Probability of this to happen is 7624512/292201338 ≈= 0.0260933507
+
+After calculating the above probabilities of the winning in the US Powerball lottery, I think everyone can see that the chance to win the main price so small that it is close to impossible. Very nice exercise! Now I can advice my friends not to buy the lottery tickets:-)
+
+
+## Stage 5
+
+#### Step 1
+- Split your dataset into two sets: training and testing sets.
+- This splitting must be done randomly (if you don't have timeseries as part of the set,
+when the process is more complicated)
+- The proportions can be different, for example 80/20, 70/30, 90/10, where the bigger
+part is the training set, and the smaller part - testing set.
+
+#### Step 2
+- Train the regression model on training set.
+- You can use different sets of features (if possible), with one or more variables.
+- You can train different types of the models (if you wish to try more), but at least
+you need to try linear regression.
+
+#### Step 3
+- Test you model on testing set.
+- Evaluate how "well" your model performs.
+- For that you can apply different metrics (MAPE, RMSE, MAE, etc.)
+- If it is possible, change the type of the model or set of features, and compare the
+results.
+- Write report.
+
+
+
+
+
 
  
  
