@@ -178,6 +178,63 @@ barplot(table(insurance$sex), main = "sex")
 barplot(table(insurance$smoker), main = "smoker")
 barplot(table(insurance$region), main = "region")
 
+install.packages("magrittr")
+install.packages("dplyr")
+library(dplyr)
+install.packages("GGally")
+library(GGally)
+#children
+insurance <- read.csv("insurance.csv", header = TRUE, sep = ",")
+ggplot(insurance, aes(children)) +
+geom_histogram(aes(y=..density..), alpha = 0.7, col = "red") +
+geom_density(col = "blue") +
+labs(title = "Density of Children") +
+theme(plot.title = element_text(hjust = 0.5))
+
+
+
+
+# children vs charges
+ggplot(insurance, aes(x = as.factor(children), y = charges, color = as.factor(children))) +
+geom_boxplot() +
+labs(title = "Medical Costs By Number Of Children",
+x = "Number of Children") +
+theme(plot.title = element_text(hjust = 0.5),
+legend.position = "none")
+
+install.packages("ggpubr")
+library(ggpubr)
+
+ggplot(insurance, aes(x = sex, fill = sex)) +
+geom_bar(aes(stat = "identity"), alpha = 0.7, col = "red") +
+labs(title = " Sex") +
+theme(plot.title = element_text(hjust = 0.5))
+
+
+pie <- (ggplot(insurance, aes(x = sex, fill = sex)))+ coord_polar("y", start = 0)
+pie 
+
+
+# medical costs based on BMI
+ggplot(insurance, aes(x = as.factor(bmi), y = charges, color = as.factor(bmi))) +
+geom_boxplot() +
+labs(title = "BMI",
+x = "BMI") +
+theme(plot.title = element_text(hjust = 0.5),
+legend.position = "none")
+
+#plot charges vs bmi
+ggplot(insurance, aes(x = bmi, y = charges, colour = "pink")) +
+  geom_point() +
+  labs(title = "Medical Costs vs BMI") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+#smoker vs charges
+ggplot(insurance, aes(x = smoker, y = charges, fill = smoker)) +
+geom_boxplot()+
+labs(title = "Medical Charges Distribution By Smoking") +
+theme(plot.title = element_text(hjust = 0.8))
+
 
 
 
@@ -353,6 +410,22 @@ plot(x = input$age, y = input$charges,
 
 
 
+install.packages("psych")
+install.packages("lattice")
+
+if(!require(psych)){install.packages("psych")}
+if(!require(FSA)){install.packages("FSA")}
+if(!require(lattice)){install.packages("lattice")}
+if(!require(lsr)){install.packages("lsr")}
+install.packages("rcompanion")
+install.packages("tidyverse")
+
+library(lattice)
+library(psych)
+library(rcompanion)
+
+
+
 install.packages("readr")
 library(Hmisc)
 library(readr)
@@ -394,6 +467,11 @@ dwtest(insurance$age ~., data = insurance)
 install.packages("car")
 library(car)
 library(car)
+
+install.packages("vtreat")
+install.packages("MASS")
+install.packages("gridExtra")
+install.packages("dplyr")
 
 durbinWatsonTest(insurance$age ~., data = insurance)
 
@@ -546,4 +624,27 @@ cvResults <- suppressWarnings(CVlm(df=insurance_2, form.lm=charges ~ age, m=5, d
 attr(cvResults, 'ms')   
 
 summary(insurance_2)
+
+install.packages("randomForest")
+library(randomForest)
+library(party)
+install.packages("party")
+
+install.packages("e1071")
+library(ggplot2)
+
+ggplot(insurance, aes(age)) +
+geom_histogram(aes(y=..density..), alpha = 0.7, col = "red") +
+geom_density(col = "blue") +
+labs(title = "Density of Age") +
+theme(plot.title = element_text(hjust = 0.5))
+
+
+
+
+ggplot(insurance, aes(charges)) +
+geom_histogram(aes(y=..density..), alpha = 0.7, col = "red") +
+geom_density(col = "blue") +
+labs(title = "Density of Medical Charges") +
+theme(plot.title = element_text(hjust = 0.5))
 

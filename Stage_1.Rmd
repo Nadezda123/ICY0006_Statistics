@@ -12,17 +12,15 @@ Read your dataset. Done
 
 Write a description of your dataset:
 • What is the topic?
-
-Medical Cost Personal Datasets
-
 • Where you get it from? 
-
-https://www.kaggle.com/mirichoi0218/insurance
-Yes, it is open dataset.
-
 • What kind of variables you have (numerical/categorical etc)? Describe the variables (the meaning of those).
 
-Short Descriptions:
+
+***Medical Cost Personal Datasets***
+
+The dateset was used from https://www.kaggle.com/mirichoi0218/insurance
+
+Short Descriptions of variables:
 
 The independent variable is manipulated by the experimenter and its effects on the dependent variable are measured.
 
@@ -35,15 +33,15 @@ Discrete variables can take only certain values (For example, a household could 
 Continuous variables can take any value within the range of the scale (For example, "time to respond to a question" are continuous variables since the scale is continuous,say, the response time could be 1.64 seconds).
 
 
+The dataset consist of 1338 observations and 7 variables.
 
+AGE - independent, qualitative and discrete
 
-AGE - independent continuous variable, quantitative
-
-SEX - categorical
+SEX - categorical, qualitative
 
 BMI - independent continuous variable, quantitative
 
-Nr of CHILDREN - independent discrete variable, quantitative
+Nr of CHILDREN - independent discrete variable, qualitative
 
 SMOKER - independent variable, categorical
 
@@ -56,114 +54,197 @@ CHARGES -dependent continuous variable, quantitative
 
 Look for missing values, or errors (NA etc) in the dataset. 
 
-Dataset looks complete
+
+```{r}
+which(is.na(insurance))
+```
+
+The return is 0, means Dataset is complete.
 
 #### Step 4
 
 Do some data visualization (distribution graphs).
+
 ```{r}
-{echo=FALSE}
-knitr::opts_chunk$set(error = TRUE)
-```
-```{r}
+#summary of our dataset, where we can see sample of the data and variable data type, as integer, character, number.
 str(insurance)
 ```
-
+Now we will visualize each variable separately. For that we can use the Density plots. 
 
 ```{r}
 insurance <- read.csv("insurance.csv", header = TRUE, sep = ",")
-hist(insurance$age, xlab = 'age', main = 'Age', col = 'blue', include = TRUE)
-```
-```{r}
-for (i in 1) {
-  d <- density(insurance.new[,i])
-  plot(d, type="n", main=colnames[i])
-  polygon(d, col="red", border="gray")
-}
+ggplot(insurance, aes(age)) +
+geom_histogram(aes(y=..density..), alpha = 0.7, col = "red") +
+geom_density(col = "blue") +
+labs(title = "Density of Age") +
+theme(plot.title = element_text(hjust = 0.5))
 ```
 
+Now we can visualize charges distribution based on Age.
 
 ```{r}
+# medical charges for the Age variable
+ggplot(insurance, aes(x = as.factor(age), y = charges, fill = as.factor(age))) +
+geom_boxplot() +
+labs(title = "Medical Costs based on Age",
+x = "Age") +
+theme(plot.title = element_text(hjust = 0.5))
+
+```
+Based on this plot we can see that age is very strong predicator in our set, but we will have to test other variables to see a full picture. Also based on this plot we can see that there are other 2 layers exist (dots on 20k and on 40k), so it means that there are 2 more variables that have valuable correlation  with charges.
+
+
+
+```{r}
+# Visualizing of Gender
+ggplot(insurance, aes(x = sex, fill = sex)) +
+geom_bar(aes(stat = "identity"), alpha = 0.7) +
+labs(title = "Count of Gender") +
+theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+#Gender Count Table
 table(insurance$sex)
 ```
+Now we can visualize charges distributions based on gender.
 
 ```{r}
-hist(insurance$bmi, xlab = 'bmi', main = 'BMI', col = 'red')
+ggplot(insurance, aes(x = sex, y = charges, color = sex)) +
+geom_boxplot() +
+labs(title = "Medical Costs by Gender") +
+theme(plot.title = element_text(hjust = 0.5))
 ```
-```{r}
-for (i in 3) {
-  d <- density(insurance.new[,i])
-  plot(d, type="n", main=colnames[i])
-  polygon(d, col="red", border="gray")
-}
-```
-
-
+Based on this plot we can see that there no big difference in charges distributions based on Gender.
 
 ```{r}
-hist(insurance$children, xlab = 'children', main = 'Children', col = 'green')
-```
-```{r}
-for (i in 4) {
-  d <- density(insurance.new[,i])
-  plot(d, type="n", main=colnames[i])
-  polygon(d, col="red", border="gray")
-}
+# Density table of BMI
+ggplot(insurance, aes(bmi)) +
+geom_histogram(aes(y=..density..), alpha = 0.7, col = "red") +
+geom_density(col = "blue") +
+labs(title = "Density of BMI") +
+theme(plot.title = element_text(hjust = 0.5))
 ```
 
+Now it will be interesting to see if BMI will have an effect on our Medical charges. Based on the following website
+https://www.cancer.org/cancer/cancer-causes/diet-physical-activity/body-weight-and-cancer-risk/adult-bmi.html
+we have an official data on BMI description (This data will help us to analize our table):
+Underweight: BMI is less than 18.5
+Normal weight: BMI is 18.5 to 24.9
+Overweight: BMI is 25 to 29.9
+Obese: BMI is 30 or more
 
 
 ```{r}
+#plot charges and bmi
+ggplot(insurance, aes(x = bmi, y = charges, colour = "pink")) +
+geom_point() +
+labs(title = "Medical Costs vs BMI") +
+theme(plot.title = element_text(hjust = 0.5))
+          
+```
+Based on this plot we can see that charges are growing with BMI increasing.
+The highest charges we have where BMI over 30 and based on our data above it means that these people are obese. Please note that it is not the main factor, but definitely plays the role.
+
+
+
+```{r}
+#Children Table
+table(insurance$children)
+```
+```{r}
+#Density of Children
+ggplot(insurance, aes(children)) +
+geom_histogram(aes(y=..density..), alpha = 0.7, col = "red") +
+geom_density(col = "blue") +
+labs(title = "Density of Children") +
+theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+Based on the Table we can see that 574 people doesn't have any children and 18 people have the maximum of 5 children in this Dataset. Now we will try to see if children have an effect on the Medical Charges. Logically we would think that the more children someone has the higher the medical charges, interesting will be to test this assumption (based at least on this dataset)
+
+
+```{r}
+# medical costs for Number of Children
+ggplot(insurance, aes(x = as.factor(children), y = charges, color = as.factor(children))) +
+geom_boxplot() +
+labs(title = "Medical Costs By Number Of Children",
+x = "Number of Children") +
+theme(plot.title = element_text(hjust = 0.5),
+legend.position = "none")
+```
+
+Based on this plot we can see that our assumption is not correct and number of children might not be the valuable factor in the increasing the Medical Charges (based on our data). In other scenarios where sample groups for people with 5 children will be big enough we might see different result.
+
+
+```{r}
+#Count table of Smoker
+table(insurance$smoker)
+```
+
+
+```{r}
+# Visualizing Smoker
+ggplot(insurance, aes(x = smoker, fill = smoker)) +
+geom_bar(aes(stat = "identity"), alpha = 0.7) +
+labs(title = "Count of Smoker") +
+theme(plot.title = element_text(hjust = 0.5))
+```
+
+Now we can try to see if person smokes how it will affect our distribution cost.
+
+```{r}
+#distribution of charges based on Smoking or not
+ggplot(insurance, aes(x = smoker, y = charges, fill = smoker)) +
+geom_boxplot()+
+labs(title = "Medical Charges Distribution based on Smoking") +
+theme(plot.title = element_text(hjust = 0.8))
+```
+Based on our plot we can see that if person smokes it has very significant factor for increasing the Medical charges. 
+
+
+
+```{r}
+#Table to Count Regions
 table(insurance$region)
 ```
 ```{r}
-hist(insurance$charges, xlab = 'charges', main = 'Charges', col = 'yellow')
+# visualizing Regions
+ggplot(insurance, aes(x = region, fill = region)) +
+geom_bar(aes(stat = "identity"), alpha = 0.7) +
+labs(title = "Count of Regions") +
+theme(plot.title = element_text(hjust = 0.5))
 ```
+Now we can try to see if region is important predictor in our model or not.
+
 ```{r}
-for (i in 7) {
-  d <- density(insurance.new[,i])
-  plot(d, type="n", main=colnames[i])
-  polygon(d, col="red", border="gray")
-}
+ggplot(insurance, aes(x = region, y = charges, color = region)) +
+geom_boxplot() +
+labs(title = "Medical Costs based on Region") +
+theme(plot.title = element_text(hjust = 0.5))
 ```
-```{r}
-#in R we can combine two plots
-par(mfrow = c(1,2)) 
-par("mar")
-par(mar=c(1,1,1,1))
-hist(insurance$charges, main = "Histogram of Charges", col = "yellow")
-plot(density(insurance$charges), main = "Density plot of Charges")
-polygon(density(insurance$charges), col = "red")
-```
+Based on our plot there are no significant differences based on the charges for the particular regions in our dataset.
 
 
 
 ```{r}
-# to examine categorical variables we can use barplot
-
-par(mfrow = c(1,3))
-barplot(table(insurance$sex), main = "sex")
-barplot(table(insurance$smoker), main = "smoker")
-barplot(table(insurance$region), main = "region")
-
-
+#visualizing Charges
+ggplot(insurance, aes(charges)) +
+geom_histogram(aes(y=..density..), alpha = 0.7, col = "red") +
+geom_density(col = "blue") +
+labs(title = "Density of Medical Charges") +
+theme(plot.title = element_text(hjust = 0.5))
 ```
+On this distribution we can see that it is right skewed and has two peaks. The first peak is around 2-3k and the second, much smaller pick, is around 40k.
+
 
 
 
 #### Step 5
 
-Describe what can you see from those graphs.
 
-Average age 39
-
-Male require insurance more than female
-
-Average BMI is 30.6634, so slightly overweight
-
-Mostly the people doesn't have any children
-
-So basically, if you are old, you smoke and you have extra weight your charges will be the highest:-)
 
 
 ## STAGE 2
@@ -696,7 +777,8 @@ results.
 
 
 When we built our linear regression model based on full dataset it is hard to predict how it will perform with new data.
-So I will split our dataset into a 80/20 sample (training/test). 
+So I will split our dataset into a 80/20 sample (training/
+test). 
 By calculating accuracy measures (like min_max accuracy) and error rates (MAPE or MSE), we will see the prediction accuracy of the model.
 
 ```{r}
