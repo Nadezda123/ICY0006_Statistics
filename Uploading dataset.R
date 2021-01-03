@@ -64,6 +64,10 @@ library(knitr)
 uninstall.packages(knitr)
 install.packages('rmarkdown')
 install.packages('plotly')
+install.packages("sos")
+library(sos)
+mean(insurance$age, trim =0.4)
+
 
 #import .cvs file to your Global Enviroment
 insurance <- read.csv("insurance.csv", header = TRUE, sep = ",")
@@ -633,6 +637,18 @@ install.packages("party")
 install.packages("e1071")
 library(ggplot2)
 
+install.packages("ggcorrplot")
+install.packages("gridExtra")
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(ggcorrplot)
+library(gridExtra)
+install.packages("caret")
+install.packages("SCORER2")
+
+library(caret)
+library(SCORER2)
 ggplot(insurance, aes(age)) +
 geom_histogram(aes(y=..density..), alpha = 0.7, col = "red") +
 geom_density(col = "blue") +
@@ -641,10 +657,45 @@ theme(plot.title = element_text(hjust = 0.5))
 
 
 
+library(dplyr)
+library(ggplot2)
+library(Hmisc)
+library(caTools)
+library(e1071)
+
+score
+  
+
+
 
 ggplot(insurance, aes(charges)) +
 geom_histogram(aes(y=..density..), alpha = 0.7, col = "red") +
 geom_density(col = "blue") +
 labs(title = "Density of Medical Charges") +
 theme(plot.title = element_text(hjust = 0.5))
+
+#smoker  as numeric
+insurance$smoker = c("yes", "no")
+convert_smoker <- factor(insurance$smoker)
+as.numeric(convert_smoker)
+
+#multiple regression
+model3 <- lm(charges ~ age+smoker, insurance_2)
+summary(model3)
+
+intercepts <- c(coef(model3)["(Intercept)"], coef(model3)["(Intercept)"] + 
+coef(model3)["smokeryes"])
+lines.df <- data.frame(intercepts = intercepts,
+slopes  = rep(coef(model3)["age"], 2),
+smoker = levels(insurance_2$smoker))
+qplot(x = age, y = charges, color = smoker, data = insurance_2) + 
+geom_abline(aes(intercept = intercepts, slope = slopes, color =smoker),
+data = lines.df) + scale_y_continuous(breaks = seq(0,65000,5000))
+
+# training/testing
+
+
+insurance_new <- insurance_2
+insurance_new$age2 <- insurance_2$age^2
+
 

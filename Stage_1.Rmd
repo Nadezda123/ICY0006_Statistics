@@ -62,8 +62,10 @@ which(is.na(insurance))
 The return is 0, means Dataset is complete.
 
 #### Step 4
+#### Step 5
 
 Do some data visualization (distribution graphs).
+Write short report
 
 ```{r}
 #summary of our dataset, where we can see sample of the data and variable data type, as integer, character, number.
@@ -72,6 +74,7 @@ str(insurance)
 Now we will visualize each variable separately. For that we can use the Density plots. 
 
 ```{r}
+#visualizationof Age variable
 insurance <- read.csv("insurance.csv", header = TRUE, sep = ",")
 ggplot(insurance, aes(age)) +
 geom_histogram(aes(y=..density..), alpha = 0.7, col = "red") +
@@ -80,7 +83,7 @@ labs(title = "Density of Age") +
 theme(plot.title = element_text(hjust = 0.5))
 ```
 
-Now we can visualize charges distribution based on Age.
+Now we can visualize charges distribution based on Age, to see the correlation between the variables.
 
 ```{r}
 # medical charges for the Age variable
@@ -91,7 +94,8 @@ x = "Age") +
 theme(plot.title = element_text(hjust = 0.5))
 
 ```
-Based on this plot we can see that age is very strong predicator in our set, but we will have to test other variables to see a full picture. Also based on this plot we can see that there are other 2 layers exist (dots on 20k and on 40k), so it means that there are 2 more variables that have valuable correlation  with charges.
+Based on this plot we can see that age is very strong predicator in our set, but we will have to test other variables to see a full picture. Also based on this plot we can see that there are in total 3 layers exist (dots below 20k, on the 20k line and on the 
+40k), so it means that there are 2 more variables that have valuable correlation  with charges.
 
 
 
@@ -126,6 +130,7 @@ labs(title = "Density of BMI") +
 theme(plot.title = element_text(hjust = 0.5))
 ```
 
+BMI histogram indicates the normal distribution with single symmetrical pick.
 Now it will be interesting to see if BMI will have an effect on our Medical charges. Based on the following website
 https://www.cancer.org/cancer/cancer-causes/diet-physical-activity/body-weight-and-cancer-risk/adult-bmi.html
 we have an official data on BMI description (This data will help us to analize our table):
@@ -145,6 +150,7 @@ theme(plot.title = element_text(hjust = 0.5))
 ```
 Based on this plot we can see that charges are growing with BMI increasing.
 The highest charges we have where BMI over 30 and based on our data above it means that these people are obese. Please note that it is not the main factor, but definitely plays the role.
+
 
 
 
@@ -237,13 +243,15 @@ geom_density(col = "blue") +
 labs(title = "Density of Medical Charges") +
 theme(plot.title = element_text(hjust = 0.5))
 ```
-On this distribution we can see that it is right skewed and has two peaks. The first peak is around 2-3k and the second, much smaller pick, is around 40k.
+On this distribution we can see that it is right skewed and has two peaks. The first peak is around 2-3k and the second, much smaller pick, is around 40k. Charges histogram is a right-skewed distribution or so called positively skewed distribution. Large portion of data values occur on the left side with a fewer number of data values on the right side.
 
 
 
 
 #### Step 5
-
+Summary
+Age, smoking and bmi factors have the highest impact on the medical charges.
+Gender, number of children and region have the lowest impact on the medical charges.
 
 
 
@@ -254,26 +262,30 @@ Do some quantitive overview
 
 - compute central tendency measures (mean, mode, median, etc)
 
-Central Tendency- is a typical or central value for a probability distribution.
+Central Tendency- is a typical or central value for a probability distribution. It is a descriptive summary of a dataset through a single value that reflects the center of the data distribution. Although it does not provide information regarding the individual values in the dataset, it delivers a comprehensive summary of the whole dataset.
 
 Mean
 
 It is the sum of all values divided by the total number of values.
-
+It shows the balance point in the distribution. For discrete variables mean values we can convert to  integer.
 
 Median
 
 It is the middle number in an ordered data set.
 ```{r}
+#central tendency measures for the Age
 summary(insurance$age)
 ```
 ```{r}
+#central tendency measures for the bmi
 summary(insurance$bmi)
 ```
 ```{r}
+#central tendency measures for the children variable
 summary(insurance$children)
 ```
 ```{r}
+#central tendency measures for the charges
 summary(insurance$charges)
 ```
 
@@ -308,9 +320,10 @@ Trimean
 It is an estimate of central tendency, and is calculated as a weighted average of the median and the two quartiles of a set of values (weighted average of 25th, 50th and 75th percentils)
 
 
+
 - compute variability measures (Range, IQR, Standard Deviation, Variance)
 
-Range
+*** Range
 The diffrence between the highest and lowest values
 ```{r}
 range(insurance$age)
@@ -327,7 +340,8 @@ range(insurance$charges)
 
 
 Interquartile Range
-The range of the middle half of a distribution
+
+The interquartile range (IQR) contains the second and third quartiles, or the middle half of the data set. Whereas the range gives the spread of the whole data set, the interquartile range gives the range of the middle half of a data set.
 
 ```{r}
 IQR(insurance$age)
@@ -345,25 +359,25 @@ IQR(insurance$charges)
 
 
 Standard Deviation
-Average distance from the mean
+
+Average distance from the mean. A high standard deviation means that values are generally far from the mean, while a low standard deviation indicates that values are clustered close to the mean.
+Standard deviation is a useful measure of spread for normal distributions.
 ```{r}
 head(insurance)
 ```
-```{r}
-sapply(insurance[,1:7], sd)
-```
+
 
 ```{r}
-# to compute Standard deviation we can also use the following formula (we compute the square root of our variance):
+# to compute Standard deviation we can use the following formula (we compute the square root of our variance):
   sqrt(var(insurance))
 ```
 
 
-
-
 Variance
+
 Average of squared distances from the mean.
 ```{r}
+#for age, bmi, children, charges
 var(insurance)
 ```
 
@@ -379,7 +393,8 @@ Write a summary
  - What you can conclude from this analysis?
  
  While a measure of central tendency describes the typical value, measures of variability define how far away the data points tend to fall from the center. The variability in the context of a distribution of values.
- Calculations of central tendency and variability measures corresponds the visual distribution.The conclusion is that data sets could have the same central tendency, but different levels of variability or vice versa. Together they can give us completed picture of our data.
+The conclusion is that data sets could have the same central tendency, but different levels of variability or vice versa. Together they give us complete picture of our data.
+The variability measures corresponds nicely with our visualizations of the distribution and give exact values that sometimes are hard to see from the visual representation.
  
  
  
@@ -390,41 +405,28 @@ Write a summary
  Try to find out, if there are some linear relationships between variables:
  
 - Pick up only those variable, which are suitable. Remove outliers if required.
-```{r}
-input <- insurance[,c('age','charges')]
-print(head(input))
-```
+- Compute correlation matrix. It would be nice if you can express it visually.
 
 
-```{r}
-
-
-input <- insurance[,c('age','charges')]
-print(head(input))
-plot(x = input$age, y = input$charges,
-     xlab = "Age",
-     ylab = "Charges",
-     xlim = c(15, 70),
-     ylim = c(1000,15000),
-     main = "Age vs Charges"
-)
-```
-In this plot we can see that variables are closely connected. With age increasing the charges are also increased.
-Relationship between the independent and dependent variable supposed to be linear, like in our plot.
+To find out the linear relationship between the variables, we will choose suitable variables like age, bmi, children and charges. First we have to remove outliers.
+Outliers are data points that fall far away from the major “cluster” of points. They can be legit data points carrying valuable information or can be erroneous values altogether. 
+There are multiple ways on how to detect potential Outliers. The most notable ones are The Inter Quartile Range method and the z-score method. We will use IQR method to detect outliers and boxplot to visualize the outliers.
 
 ```{r}
-#we can check for outliers by using boxplot
+#we can use visualization to check for outliers by using boxplot
+
 par(mfrow = c(1,3))
 par("mar")
 par(mar=c(1,1,1,1))
-boxplot(insurance$age, main = "Histogram of Age")
-boxplot(insurance$bmi, main = "Histogram of BMI")
-boxplot(insurance$children, main = "Histogram of Children")
+boxplot(insurance$age, main = "Boxplot of Age")
+boxplot(insurance$bmi, main = "Boxplot of BMI")
+boxplot(insurance$children, main = "Boxplot of Children")
+
 ```
 
-Based on boxplot, we can see some outliers in BMI
 
-
+Based on the boxplots above we can see that we have few outliers in bmi boxplot
+We can use quantile function, IQR function and subset function to find exact value and remove outliers
 
 ```{r}
 # removing outliers with IQR
@@ -432,248 +434,316 @@ Based on boxplot, we can see some outliers in BMI
 Q1 <-quantile(insurance$bmi, .25)
 Q3 <- quantile(insurance$bmi, .75)
 IQR <- IQR(insurance$bmi)
-
 # only keep rows that have values within 1.5*IQR of Q1 and Q3
 insurance_2 <- subset(insurance, insurance$bmi> (Q1 - 1.5*IQR) & insurance$bmi< (Q3 + 1.5*IQR))
-
 #we can compare to the original value that was 1338
 str(insurance_2)
 ```
-
-
-
 ```{r}
-input <- insurance_2[,c('bmi','charges')]
-print(head(input))
-plot(x = input$bmi, y = input$charges,
-     xlab = "BMI",
-     ylab = "Charges",
-     xlim = c(1, 70),
-     ylim = c(1000,60000),
-     main = "BMI vs Charges"
-)
+#we can visualize that outliers removed
+par(mfrow = c(1,3))
+par("mar")
+par(mar=c(1,1,1,1))
+boxplot(insurance_2$bmi, main = "Boxplot of BMI")
 ```
-In this plot we can see that relationship is not linear and the high BMI is not affecting the charges significantly. 
+We can see that outliers were removed from our bmi boxplot and now we have 1329 observations instead of 1338.
+
 
 
 ```{r}
-input <- insurance_2[,c('children','charges')]
-print(head(input))
-plot(x = input$children, y = input$charges,
-     xlab = "Children",
-     ylab = "Charges",
-     xlim = c(1, 5),
-     ylim = c(1000,60000),
-     main = "Children vs Charges"
-)
+#input <- insurance_2[,c('bmi','charges')]
+#print(head(input))
+#plot(x = input$bmi, y = input$charges,
+#     xlab = "BMI",
+#     ylab = "Charges",
+#     xlim = c(1, 70),
+#     ylim = c(1000,60000),
+#     main = "BMI vs Charges"
+#)
 ```
-In this plot we can see that amount of children is slightly affecting the charges, the more children person has the less are the charges.
 
 
-- Compute correlation matrix. It would be nice if you can express it visually.
+***Correlation matrix***
 
+Correlation matrix showing the relationship between two or more variables and the interrelation in their movements.
+The matrix depicts the correlation between all the possible pairs of values in a table. It consists of rows and columns that show the variables. Each cell in a table contains the correlation coefficient.
+The correlation coefficient's values range between -1.0 and 1.0.
+Based on Pearson's correlation value table we can better understand the relationship between the variables:
+
+0- No correlation
+-0.2 to 0 /0 to 0.2 – very weak negative/ positive correlation
+-0.4 to -0.2/0.2 to 0.4 – weak negative/positive correlation
+-0.6 to -0.4/0.4 to 0.6 – moderate negative/positive correlation
+-0.8 to -0.6/0.6 to 0.8 – strong negative/positive correlation
+-1 to -0.8/0.8 to 1 – very strong negative/positive correlation
+-1/1 – perfectly negative/positive correlation
 
 
 ```{r}
+#correlation values
 library("corrplot")
 cor(insurance_2[sapply(insurance_2, is.numeric)])
 
-#We can see that the highest correlation based on Pearson, is between Age and Charges
-
 ```
+Based on our values (rounded values):
+- First cell is always be 1 because it represents the relationship between the same variable (we are not interested in that kind of relationship).
+BMI/age - 0.11 - 
+Children/age - 0.04
+Charges/age - 0.3
+bmi/children - 0.02
+bmi/charges - 0.19
+children/charges - 0.07
+Based on our values we have the highest positive correlation between age and charges, which is 0.3. The other relationships that note to mention are bmi/charges, which is approx 0.2. And the slight relationship we can see between the bmi and age, which is 0.1.
+
+
 ```{r}
-#Correlation matrix visualization 
+#we can create Correlation matrix visualization to better see the relationships
+
 library(GGally)
 library("corrplot")
 mat_1 <- as.matrix(cor((insurance_2[sapply(insurance_2, is.numeric)])))
 mat_1
-corrplot.mixed(cor(mat_1), title = "Correlations between numeric variables", order="hclust", tl.col="black")
+corrplot(cor(mat_1), title = "Correlations between numeric variables", order="hclust", tl.col="black")
 ```
 In this plot the size and shade of each circle represents the strength of each relationship, while the color represents the direction, either negative or positive.
+We can see that the highest positive correlation, is between Age and Charges (matching our correlation value table) In correlation table 0.3 -is called weak positive correlation, but it is the highest from what we have.
 
 
 
+#### Step 2
+Pay attention to dependent variable:
+
+- From correlation analysis you know which variables have high correlation with your dependent variable.
+- Draw the scatter plots "Dependent variable vs independent variable"
+- Write down your observations
+Based on our correlation analyses and scatter plot, we can conclude that these two variables share a common covariance and are homoscedastic.
+
+
+From the our correlation matrix we can see the charges variable is our dependent variable, so we will create the scatterplots for charges vs age/bmi/children (not categorical variables)
+
+But first I would like to make the scatterplot for all the variables (except charges) to view the relationship between the categorical variables as well.
 ```{r}
-# to check the numeric variables relationship
-library(PerformanceAnalytics)
-chart.Correlation(mat_1, histogram=TRUE, pch=20)
-```
-In this plot we can see the following information:
-- The strength of the relationship.
-- The significance of the relationship.
-- Histogram with kernel density estimation and rug plot.
-- Scatter plot with fitted line.
-
-```{r}
-#we can also create another version of complete Scatter plot matrix (excluding charges)
+#we can also create another version of complete Scatter plot matrix between all the variables in our dataset (excluding charges )
 library(psych)
 pairs.panels(insurance_2[c("age", "sex", "bmi", "children", "smoker", "region")], digits = 2, cor = TRUE, main = "Insurance Matrix")
 ```
-Based on the plot above, we can see that there no strong correlations between the variables, r < 0.2
+In the scatterplot matrix:
+- red dot shows the mean
+- oval means more correlation and if circle is more round then less correlation.
+Based on the plot above, we can see that there are no strong correlations between these variables, r < 0.2
 
 
-## Step 2
-Pay attention to dependent variable:
 
-- From correlation analysis you know which variables have high correlation with your
-dependent variable.
-
-Highest correlation we have is between the Age and the Charges.
-
-- Draw the scatter plots "Dependent variable vs independent variable"
-
+We will proceed now to create our scatterplots for the highest correlations, charges vs age/bmi/children
 ```{r}
+#Age vs charges
 input <- insurance_2[,c('age','charges')]
 
 plot(x = input$age, y = input$charges,
      xlab = "Age",
      ylab = "Charges",
      xlim = c(15, 70),
-     ylim = c(1000,15000),
+     ylim = c(1000,60000),
      main = "Dependent vs independent variable"
 )
 ```
 
+Based on the above scatterplot we can see that charges are in 3 ranges (we saw it already in Stage 1) and steadily increasing with age.
+We also see:
+- positive relationship between variables,
+- smooth increasing slope of the lines,
+- how tightly the points cluster, specially at the bottom range (this means the linear relationship)
+- homoscedasticity
+Meaning there is a pretty moderate relationship between the age and the charges: the older the person the higher the charges.But there some factor, probably due to smoker or not that affecting and creating these ranges
 
-- Write down your observations
-Based on our correlation analyses and scatter plot, we can conclude that these two variables share a common covariance and are homoscedastic.
+
+
+
+```{r}
+#BMI vs charges
+input <- insurance_2[,c('bmi','charges')]
+
+plot(x = input$bmi, y = input$charges,
+     xlab = "BMI",
+     ylab = "Charges",
+     xlim = c(10, 50),
+     ylim = c(1000,60000),
+     main = "Dependent vs independent variable"
+)
+```
+
+We see very weak negative relationship between the charges and bmi, where mostly the points cluster along the below line. There is also minimum homoscedasticity in the plot.
+Based on the above we can see that charges are mostly below 15k and only few are above 40k. And there other factors that influence the charges.
+
+
+```{r}
+# Children vs charges
+input <- insurance_2[,c('children','charges')]
+
+plot(x = input$children, y = input$charges,
+     xlab = "Children",
+     ylab = "Charges",
+     xlim = c(0, 6),
+     ylim = c(1000,60000),
+     main = "Dependent vs independent variable"
+)
+```
+
+We can see that there is very weak negative relationship between the children and the charges.
+Based on the above scatterplot we can say that people with no children have higher medical costs, it means there are other factors that affecting the charges. 
 
 
 ## Step 3
 Pick up one pair of "dependent variable vs independent variable"
 - Construct the linear regression model.
+- Draw the scatter plot "with line"
+- Write down your observations
+
 
 Linear Regression is used predict or estimate the value of a dependent variable by modelling it against one or more independent variables.
+We will look into our liner regression model for the age vs charges with the function and the scatterplot with a line. 
+
+
 
 ```{r}
 #simple linear regression
 data <- lm(insurance_2$charges ~ insurance_2$age)
 summary(data)
 
+#The error rate can be estimated by dividing the RSE by the mean outcome variable
 sigma(data)/mean(insurance_2$charges)
 
 
 ```
-F-statistic - Used to estimate the significance of a regression model as a whole. The higher the parameter value, the better it is.
+
+F-statistic - Used to estimate the significance of a regression model as a whole. The higher the parameter value, the better it is. Our value is 133.2, which is good.
+
 t value - A criteria based on the Student's t distribution. The value of the parameter in linear regression indicates the significance of the factor; it is generally accepted that at t> 2 the factor is significant for the model.
-p value - This is the probability that the hypothesis that the independent variables do not explain the dynamics of the dependent variable is true zero. If the p value is below the threshold (.05 or .01 for the most demanding), then the null hypothesis is false. The lower the better)
+
+p value - This is the probability that the hypothesis that the independent variables do not explain the dynamics of the dependent variable is true zero. If the p value is below the threshold (.05 or .01 for the most demanding), then the null hypothesis is false. The lower the better:-)
+
 In our plot the p-value is 2.2e-16, which is 2.2 X 10 ^ -16
-If we test with 95% confidence or 5% significance, P-value of 2.2 X 10 ^-16 is very less compared to 5%=0.05. So we will reject the null hypothesis
+If we test with 95% confidence or 5% significance, our P-value of 2.2 X 10 ^-16 is very less compared to 5%=0.05. So we will reject the null hypothesis
 
-
-
-- Draw the scatter plot "with line"
+Our prediction equation:
+charges = 3100 + 258 * age
 
 ```{r}
-input <- insurance_2[,c('age','charges')]
-plot(x = input$age, y = input$charges,
+# we need to convert the smoker variable  from categorical to numerical, because it is affecting our main correlation pair
+
+insurance_2$smoker <- as.factor(insurance_2$smoker)
+```
+
+
+
+```{r}
+#scatterplot with the line
+simple_lin <- insurance_2[,c('age','charges')]
+plot(x = input$age, y = input$charges, 
      xlab = "Age",
      ylab = "Charges",
-     xlim = c(15, 70),
-     ylim = c(1000,15000),
-     main = "Age vs Charges")
+     xlim = c(18, 70),
+     ylim = c(0,60000),
+     main = "Age vs Charges",
+     col = "lightblue")
 
-abline(lm(input$charges ~ input$age, data = insurance_2), col="blue")
+abline(lm(input$charges ~ input$age, data = insurance_2), col="pink", lwd=2)
 linearReg <- lm(input$age ~ input$charges, data = insurance_2)
 print(linearReg)
 ```
 
-
 ```{r}
-# On this plot we can see weak relationship
-input3<- insurance_2[,c('bmi','charges')]
-plot(x = input3$bmi, y = input3$charges,
-     xlab = "BMI",
-     ylab = "Charges",
-     #    xlim = c(1, 70),
-     #    ylim = c(1000,60000),
-     main = "BMI vs Charges"
-)
-
-abline(lm(input3$charges ~ input3$bmi, data = insurance_2), col = "green")
-linearReg <- lm(input3$bmi ~ input3$charges, data = insurance_2)
-print(linearReg)
+# we are creating the scatterplot in different colors to be able to see why do we have 3 ranges in age vs charges relationship and which other variable affecting it.
+ggplot(insurance_2, aes(age,charges, col=smoker)) + geom_point(size=0.5) + scale_y_continuous(breaks = seq(0,65000,5000))
 ```
-
-```{r}
-
-input2 <- insurance_2[,c('children','charges')]
-plot(x = input2$children, y = input2$charges,
-     xlab = "Children",
-     ylab = "Charges",
-#    xlim = c(1, 5),
-#    ylim = c(1000,60000),
-     main = "Children vs Charges"
-)
-abline(lm(input2$charges ~ input2$children, data = insurance_2), col = "red")
-linearReg <- lm(input2$children ~ input2$charges, data = insurance_2)
-print(linearReg)
-```
+Based on the scatterplots above we see that at the bottom layer of our linear relationship we have very nice, smooth increase in charges with age, for people who doesn't smoke (red dots). Then at the middle and upper layer we can say that charges increased a lot for the smokers (green dots).
+Because of influence of smoker variable on our strongest correlation pair our regression line is passing slightly above the main set of values. Later on we will see the reason for it. Still the regression line is very useful for forecasting our procedures. It is showing the interrelation of our dependent (y) variable with our independent(x) variable.
 
 
-```{r}
-# as an Example, want to show the plot there are no relationship
 
-input4<- insurance_2[,c('bmi','age')]
-plot(x = input4$bmi, y = input4$age,
-     xlab = "BMI",
-     ylab = "Age",
-     #    xlim = c(1, 70),
-     #    ylim = c(1000,60000),
-     main = "BMI vs Age"
-)
+Further in multiple regression we will analyze it in more details.
 
-abline(lm(input4$age ~ input4$bmi, data = insurance_2), col = "green")
-linearReg <- lm(input4$bmi ~ input4$age, data = insurance_2)
-print(linearReg)
-```
-
-- Write down your observations
-
-If we analyze the highest correlation that we have (Ages and Charges), we can see the positive relationship. When the Age is increasing then we see the Charges are also increasing accordingly. The correlation between them is 0.302 and it is the highest in out table of variables.
 
 
 ## Step 4
+
+***Multiple Regression**
+
 - Try regression with several variables, if possible.
+- Additional: try other regression algorithms.
 
 ```{r}
 #multiple regression
-#compute the model coefficients
+#compute the model coefficients (all x variables)
 multiple_model <- lm(charges ~ age + sex + bmi + children + smoker + region, data = insurance_2)
 summary(multiple_model)
-plot(multiple_model)
+
+
+#The error rate can be estimated by dividing the RSE by the mean outcome variable
+sigma(multiple_model)/mean(insurance_2$charges)
+
 ```
-Interpretation
 The first step in interpreting the multiple regression analysis is to examine the F-statistic and the associated p-value.
-In our plot, it can be seen that p-value of the F-statistic is < 2.2e-16 for the Age, which is highly significant. This means that, Age, is one of the predictor variables that significantly related to the outcome variable.
-Based on coefficients table we can see that t value evaluates whether or not there is significant association between the predictor and the outcome variable, that is whether the beta coefficient of the predictor is significantly different from zero. Also we can see that changes in Age and less in bmi are associated to changes in charges while changes in children is not significantly associated with sales.
+
+In our plot, it can be seen that p-value of the F-statistic is < 2.2e-16 for the Age, which is highly significant. This means that, Age, smoker and bmi. Age variable is one of the predictor variables that significantly related to the outcome variable. Smoker is categorical variable, so we would use it just to show the influence on the age vs charges relationship.
+
+Based on coefficients table we can see that t value evaluates whether or not there is significant association between the predictor and the outcome variable, that is whether the beta coefficient of the predictor is significantly different from zero. Also we can see that changes in Age and smoker are highly associated to changes in charges while changes in other variables are not significantly associated with charges.
+
+We have a decent R2 of 0.7511, which implies 75% of the variation of charges could be explained by our set of included independent variables.
 
 Because children and region variables are not significant, we can remove it from our model and recreate it without it.
 
 ```{r}
 #compute the model coefficients
-model <- lm(charges ~ age + bmi, data = insurance_2)
+model <- lm(charges ~ age + smoker + bmi, data = insurance_2)
 summary(model)
 
 #The error rate can be estimated by dividing the RSE by the mean outcome variable
-sigma(model)/mean(insurance$charges)
+sigma(model)/mean(insurance_2$charges)
 ```
-The RSE estimate gives a measure of error of prediction. The lower the RSE, the more accurate the model.
-Corresponding to 85% error rate, but still better than in the simple model, where RSE was 86% error rate.
 
-```{r}
-#the confidence interval of the model coefficient
-confint(model)
-```
 To assess model accuracy, we have to take a look at other values like R2 and RSE (residual standard error or sigma)
+
+The RSE estimate gives a measure of error of prediction. The lower the RSE, the more accurate the model.
+Corresponding to 45% error rate, it is much better than in the simple model, where RSE was 86% error rate.
+
 In multiple linear regression, the R2 represents the correlation coefficient between the observed values of the outcome variable (y) and the fitted (i.e., predicted) values of y. For this reason, the value of R will always be positive and will range from zero to one. 
-R2 represents the proportion of variance, in the outcome variable y, that may be predicted by knowing the value of the x variables. An R2 value close to 1 indicates that the model explains a large portion of the variance in the outcome variable.
+R2 represents the proportion of variance, in the outcome variable y, that may be predicted by knowing the value of the x variables. An R2 value close to 1 indicates that the model explains a large portion of the variance in the outcome variable. In our case it is 0.74
 The adjustment in the “Adjusted R Square” value in the summary output is a correction for the number of x variables included in the prediction model.
-In our plot, with age and bmi predicator variables, the adjusted R2 = 0,12, meaning that "12% of the variance in the measure of charges can be predicted by age and bmi. In comparison, this model is better than our simple liner regression model with only age, which had an adjusted R2 of 0.09.
+In our plot, with age and bmi predicator variables, the adjusted R2 = 0,74, meaning that "74% of the variance in the measure of charges can be predicted by age, smoker and bmi. In comparison, this model is much better than our simple liner regression model with only age, which had an adjusted R2 of 0.09.
 
-
-- Additional: try other regression algorithms.
+Now we can try recreate our scatterplot with the regression line and see how it will pass when we include our variables with the highest correlation.
  
+```{r}
+
+#compute and visualize the scatterplot with the regression line (charges, age, smoker)
+
+model3 <- lm(charges ~ age+smoker, insurance_2)
+summary(model3)
+
+intercepts <- c(coef(model3)["(Intercept)"], coef(model3)["(Intercept)"] + 
+coef(model3)["smokeryes"])
+lines.df <- data.frame(intercepts = intercepts,
+slopes  = rep(coef(model3)["age"], 2),
+smoker = levels(insurance_2$smoker))
+qplot(x = age, y = charges, color = smoker, data = insurance_2) + 
+geom_abline(aes(intercept = intercepts, slope = slopes, color =smoker),
+data = lines.df) + scale_y_continuous(breaks = seq(0,65000,5000))
+
+#The error rate can be estimated by dividing the RSE by the mean outcome variable
+sigma(model3)/mean(insurance_2$charges)
+```
+
+Based on our scatterplot above we can see that we 2 parallel lines, which means we have two regression equations having the same slope, but different intercepts. Slope of the regression line we can see in column with Estimate values for the variable age -  274.55. Intercept for the smoker is much higher than for non smoker, 23627.66. Meaning of it is that medical charges for the smoker is higher by $23k (approx) than for the person who doesn't smoke. Of course the age will be considered as well, but the charges are very much depend on if the person smokes or not.
+
+
+To summarize all of the above.
+The RSE value lowest in the model with all the variables 45%, the next model with slighlty higher RSE is the model with charges/age/smoker/bmi and with a little bit higher RSE 48% is the model with charges/age/smoker. Other variables like sex and region are very insignificant in affecting the outcome of the charges variable.
+So based on all the analyses above we can conclude that multiple regression model with charges/age/smoker/bmi provides the most valuable evaluation parameters.
+
+
+
+
 
 ## Stage 4
 Step 1
@@ -761,13 +831,104 @@ when the process is more complicated)
 - The proportions can be different, for example 80/20, 70/30, 90/10, where the bigger
 part is the training set, and the smaller part - testing set.
 
+
+When we built our linear regression model based on full dataset it is hard to predict how it will perform with new data.
+So we will split our dataset into a 80/20 sample (training/
+test). 
+Later, by calculating accuracy measures (like min_max accuracy) and error rates (MAPE or MSE), we will see the prediction accuracy of the model.
+
+```{r}
+#creating the training and testing data
+# setting seed to reproduce results of random sampling
+set.seed(100)
+trainingRowIndex <- sample(1:nrow(insurance_2), 0.8*nrow(insurance_2))
+train <- insurance_2[trainingRowIndex, ] #model training data
+test <- insurance_2[-trainingRowIndex, ]    # test data
+
+#Training Data
+str(train)
+summary(train)
+
+```
+```{r}
+#Test date
+str(test)
+summary(test)
+```
+
+We can see that our Training set contains 1063 observations
+and Test set has 266 observations.
+Also with summary function we can see the values for particular column. We can easily compare them between the training and the testing sets.
+
+
+
 #### Step 2
 - Train the regression model on training set.
 - You can use different sets of features (if possible), with one or more variables.
-- You can train different types of the models (if you wish to try more), but at least
-you need to try linear regression.
+- You can train different types of the models (if you wish to try more), but at least you need to try linear regression.
 
-#### Step 3
+
+
+```{r}
+#we create the boxplots to see our training data
+par(mfrow = c(2,4))
+hist(train$charges, col = "Orange", main = "Distribution of charges", xlab="Charges")
+hist(train$age, col = "Green", main = "Distribution of age", xlab="Age")
+hist(train$bmi, col = "Yellow", main = "Distribution of BMI", xlab="BMI")
+barplot(height = table(train$children),col = "Red",  main = "Distribution of children", xlab="No.of children")
+barplot(height = table(train$smoker), col="Blue", main = "Distribution of Smoking", xlab = "Smoker")
+barplot(height = table(train$sex), col="Purple", main = "Distribution of Sex", xlab = "Sex")
+barplot(height = table(train$region), col="Lightblue", main = "Distribution of Region",xlab='Region')
+```
+
+
+
+
+```{r}
+#regression model
+#computing and visualizing the training set
+model5 <- lm(charges ~ age + smoker, data = train)
+chargesPred <- predict(model5, test)
+summary(model5)
+
+#calculate information criterion and balance between a good fit and over complexity in a model
+AIC(model5)
+BIC(model5)
+
+
+#compute and visualize the scatterplot with the regression line (charges, age, smoker)
+
+intercepts <- c(coef(model5)["(Intercept)"], coef(model5)["(Intercept)"] + 
+coef(model5)["smokeryes"])
+lines.df <- data.frame(intercepts = intercepts,
+slopes  = rep(coef(model5)["age"], 2),
+smoker = levels(train$smoker))
+qplot(x = age, y = charges, color = smoker, data = train) + 
+geom_abline(aes(intercept = intercepts, slope = slopes, color =smoker),
+data = lines.df) + scale_y_continuous(breaks = seq(0,65000,5000))
+
+#The error rate can be estimated by dividing the RSE by the mean outcome variable
+sigma(model5)/mean(train$charges)
+
+```
+Based on the data above for the training model, it is very similar to our original model. So explanation above applies.
+
+
+```{r}
+# to check the error term
+mean(model5$residuals)
+```
+Our model has mean almost 0
+
+```{r}
+# residuals vs fitted values helps us to detect non-linearity, unequal error variances, and outliers.
+plot(model5, which = 1, col = "blue")
+```
+
+We can see that fitted values increase and linearity seems to hold reasonably well, as the red line is close to the dashed line, with slightly curved pattern. We can also note heteroskedasticity. Finally, points 243, 1302, and 578 may be outliers, with large residual values.
+
+
+ #### Step 3
 - Test you model on testing set.
 - Evaluate how "well" your model performs.
 - For that you can apply different metrics (MAPE, RMSE, MAE, etc.)
@@ -776,63 +937,15 @@ results.
 - Write report.
 
 
-When we built our linear regression model based on full dataset it is hard to predict how it will perform with new data.
-So I will split our dataset into a 80/20 sample (training/
-test). 
-By calculating accuracy measures (like min_max accuracy) and error rates (MAPE or MSE), we will see the prediction accuracy of the model.
-
-```{r}
-#creating the training and testing data
-# setting seed to reproduce results of random sampling
-set.seed(100)
-trainingRowIndex <- sample(1:nrow(insurance_2), 0.8*nrow(insurance_2))
-trainingData <- insurance_2[trainingRowIndex, ] #model training data
-testData <- insurance_2[-trainingRowIndex, ]    # test data
-
-
-str(trainingData)
-str(testData)
-
-```
-We can see that our Training set contains 1063 observations
-and Test set has 266 observations
-
-
-```{r}
-#build the model on the training data
-lmMod <-lm(charges ~ age, data=trainingData) #build the model
-chargesPred <- predict(lmMod, testData) # predict charges
-
-#model summary
-summary(lmMod)
-#calculate akaike information criterion
-AIC(lmMod)
-
-
-```
-
-```{r}
-plot(x = trainingData$age, y = trainingData$charges,
-     xlab = "Age",
-     ylab = "Charges",
-     xlim = c(15, 70),
-     ylim = c(1000,15000),
-     main = "Age vs Charges")
-
-abline(lm(trainingData$charges ~ trainingData$age, data = trainingData), col="blue")
-linearReg <- lm(trainingData$age ~ trainingData$charges, data = trainingData)
-print(linearReg)
-```
-
-
-
-NOw we can calculate prediction accuracy and error rate. A higher correlation accuracy implies that the actuals and predicted values have similar directional movement.
+Now we can calculate prediction accuracy and error rate. A higher correlation accuracy implies that the actuals and predicted values have similar directional movement.
 ```{r}
 # making actuals_predicteds dataframe
-actuals_preds <- data.frame(cbind(actuals=testData$charges, predicteds=chargesPred))
+actuals_preds <- data.frame(cbind(actuals=test$charges, predicteds=chargesPred))
 correlation_accuracy <- cor(actuals_preds)
 head(actuals_preds)
 ```
+
+
 
 MinMaxAccuracy = mean(min(actuals, predicteds)/max(actuals, predicteds)
 ```{r}
@@ -840,6 +953,7 @@ MinMaxAccuracy = mean(min(actuals, predicteds)/max(actuals, predicteds)
 min_max_accuracy <- mean(apply(actuals_preds, 1, min) / apply(actuals_preds, 1, max))  
 min_max_accuracy
 ```
+
 MeanAbsolutePercentageError(MAPE) = mean(abc(predicteds?actuals)/actuals)
 ```{r}
 #MAPE Calculations
@@ -847,16 +961,16 @@ mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_pre
 mape
 ```
 
-Also I found that we can compute all the error metrics in one shot
+We can compute all the error metrics in one shot
 ```{r}
 DMwR::regr.eval(actuals_preds$actuals, actuals_preds$predicteds)
 ```
 
+
+
  
- 
- 
- 
- 
+
+
  
  
  
