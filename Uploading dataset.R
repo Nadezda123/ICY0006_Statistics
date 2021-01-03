@@ -698,4 +698,87 @@ data = lines.df) + scale_y_continuous(breaks = seq(0,65000,5000))
 insurance_new <- insurance_2
 insurance_new$age2 <- insurance_2$age^2
 
+install.packages("Metrics")
+library(Metrics)
+
+#creating the training and testing data
+# setting seed to reproduce results of random sampling
+set.seed(100)
+trainingRowIndex <- sample(1:nrow(insurance_2), 0.8*nrow(insurance_2))
+train <- insurance_2[trainingRowIndex, ] 
+test <- insurance_2[-trainingRowIndex, ]   
+
+
+#visualizing our first model
+ggplot(data= insurance_2)+geom_point(aes(x=age,y=charges,color=smoker)) 
+ggplot(data= insurance_2)+geom_point(aes(x=smoker,y=charges,color=smoker)) 
+ggplot(data= insurance_2)+geom_point(aes(x=bmi,y=charges,color=smoker))
+ggplot(data= insurance_2)+geom_point(aes(x=children,y=charges,color=smoker)) 
+ggplot(data= insurance_2)+geom_point(aes(x=region,y=charges,color=smoker))
+ggplot(data= insurance_2)+geom_point(aes(x=sex,y=charges,color=smoker))
+
+
+
+#build the model on the training set 
+model5 <- lm(charges ~ age + smoker +bmi + region + children + sex, data = train)
+#chargesPred <- predict(model5, test)
+summary(model5)
+
+
+#predict the  first model
+pred1 <- predict(model5, test)
+actuals_preds1 <- data.frame(cbind(actuals = test$charges, predicted = pred1))
+cor(actuals_preds1)
+
+
+min_max_accuracy <- mean(apply(actuals_preds1, 1, min) / apply(actuals_preds1, 1, max))  
+
+mape <- mean(abs((actuals_preds1$predicted - actuals_preds1$actuals))/actuals_preds1$actuals)  
+
+DMwR::regr.eval(actuals_preds1$actuals, actuals_preds1$predicted)
+
+
+#improvements
+
+insurance_new <- insurance_2
+insurance_new$smoker = as.factor(insurance_new$smoker)
+insurance_new$smoker = as.numeric(insurance_new$smoker)
+insurance_new$children = as.factor(insurance_new$children)
+insurance_new$children = as.numeric(insurance_new$children)
+insurance_new$region = as.factor(insurance_new$region)
+insurance_new$region = as.numeric(insurance_new$region)
+insurance_new$bmi30 <- ifelse(insurance_new$bmi >= 30, 1, 0)
+
+
+# Create Training and Test data -- model2 (after the improvements)
+trainingRowIndex <- sample(1:nrow(insurance_new), 0.8 * nrow(insurance_new))
+train2 <- insurance_new[trainingRowIndex,]
+test2 <- insurance_new[-trainingRowIndex,] 
+
+
+
+#visualizing our model 2
+#color smoker, 2 means  = yes, 1 means  = no
+ggplot(data= insurance_new)+geom_point(aes(x=age,y=charges,color=smoker)) 
+ggplot(data= insurance_new)+geom_point(aes(x=smoker,y=charges,color=smoker)) 
+ggplot(data= insurance_new)+geom_point(aes(x=bmi,y=charges,color=smoker))
+ggplot(data= insurance_new)+geom_point(aes(x=children,y=charges,color=smoker)) 
+ggplot(data= insurance_new)+geom_point(aes(x=region,y=charges,color=smoker))
+ggplot(data= insurance_new)+geom_point(aes(x=sex,y=charges,color=smoker))
+
+
+# predict
+pred2 <- predict(model6, test2)
+actuals_preds2 <- data.frame(cbind(actuals = test2$charges, predicted = pred2))
+cor(actuals_preds2)
+
+#Min-Max Calculations
+min_max_accuracy <- mean(apply(actuals_preds2, 1, min) / apply(actuals_preds2, 1, max))  
+
+#MAPE Calculations
+mape <- mean(abs((actuals_preds2$predicted - actuals_preds2$actuals))/actuals_preds2$actuals) 
+
+#other metrics, RMSE, MAE
+DMwR::regr.eval(actuals_preds2$actuals, actuals_preds2$predicted)
+
 
