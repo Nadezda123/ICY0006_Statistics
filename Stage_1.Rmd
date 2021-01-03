@@ -1,9 +1,13 @@
 ---
-title: "Medical Cost Personal Datasets"
+title: "ICY0006 Probability Theory and Statistics"
 output: html_notebook
 ---
 
-## STAGE 1
+## Project - Medical Cost Personal Datasets
+
+
+
+### STAGE 1
 #### Step 1
 
 Read your dataset. Done
@@ -11,9 +15,29 @@ Read your dataset. Done
 #### Step 2
 
 Write a description of your dataset:
+
 • What is the topic?
+
 • Where you get it from? 
-• What kind of variables you have (numerical/categorical etc)? Describe the variables (the meaning of those).
+
+• What kind of variables you have (numerical/categorical etc)?
+
+Describe the variables (the meaning of those).
+
+#### Step 3
+
+Look for missing values, or errors (NA etc) in the dataset.
+
+#### Step 4
+
+
+Do some data visualization (distribution graphs).
+
+#### Step 5
+
+Describe  what you can see from those graphs
+
+
 
 
 ***Medical Cost Personal Datasets***
@@ -52,7 +76,7 @@ CHARGES -dependent continuous variable, quantitative
 
 #### Step 3
 
-Look for missing values, or errors (NA etc) in the dataset. 
+ 
 
 
 ```{r}
@@ -61,11 +85,9 @@ which(is.na(insurance))
 
 The return is 0, means Dataset is complete.
 
-#### Step 4
-#### Step 5
+#### Step 4 and 5
 
-Do some data visualization (distribution graphs).
-Write short report
+
 
 ```{r}
 #summary of our dataset, where we can see sample of the data and variable data type, as integer, character, number.
@@ -245,12 +267,8 @@ theme(plot.title = element_text(hjust = 0.5))
 ```
 On this distribution we can see that it is right skewed and has two peaks. The first peak is around 2-3k and the second, much smaller pick, is around 40k. Charges histogram is a right-skewed distribution or so called positively skewed distribution. Large portion of data values occur on the left side with a fewer number of data values on the right side.
 
-
-
-
-#### Step 5
 Summary
-Age, smoking and bmi factors have the highest impact on the medical charges.
+Age, smoking and bmi variables have the highest impact on the medical charges.
 Gender, number of children and region have the lowest impact on the medical charges.
 
 
@@ -323,7 +341,9 @@ It is an estimate of central tendency, and is calculated as a weighted average o
 
 - compute variability measures (Range, IQR, Standard Deviation, Variance)
 
-*** Range
+Range
+
+
 The diffrence between the highest and lowest values
 ```{r}
 range(insurance$age)
@@ -420,7 +440,6 @@ par("mar")
 par(mar=c(1,1,1,1))
 boxplot(insurance$age, main = "Boxplot of Age")
 boxplot(insurance$bmi, main = "Boxplot of BMI")
-boxplot(insurance$children, main = "Boxplot of Children")
 
 ```
 
@@ -450,17 +469,6 @@ We can see that outliers were removed from our bmi boxplot and now we have 1329 
 
 
 
-```{r}
-#input <- insurance_2[,c('bmi','charges')]
-#print(head(input))
-#plot(x = input$bmi, y = input$charges,
-#     xlab = "BMI",
-#     ylab = "Charges",
-#     xlim = c(1, 70),
-#     ylim = c(1000,60000),
-#     main = "BMI vs Charges"
-#)
-```
 
 
 ***Correlation matrix***
@@ -665,9 +673,9 @@ Further in multiple regression we will analyze it in more details.
 
 
 
-## Step 4
+#### Step 4
 
-***Multiple Regression**
+**Multiple Regression**
 
 - Try regression with several variables, if possible.
 - Additional: try other regression algorithms.
@@ -888,7 +896,6 @@ ggplot(data= insurance_2)+geom_point(aes(x=sex,y=charges,color=smoker))
 #build the model on the training set 
 #computing and visualizing the training set 
 model5 <- lm(charges ~ age + smoker +bmi + region + children + sex, data = train)
-#chargesPred <- predict(model5, test)
 summary(model5)
 
 ```
@@ -902,7 +909,7 @@ plot(model5, which = 1, col = "blue")
 We can see that fitted values increase and linearity seems to hold reasonably well, as the red line is close to the dashed line, with slightly curved pattern. We can also note heteroskedasticity. Finally, points 578, 1301, and 243 may be outliers, with large residual values.
 
 
- #### Step 3
+#### Step 3
 - Test you model on testing set.
 - Evaluate how "well" your model performs.
 - For that you can apply different metrics (MAPE, RMSE, MAE, etc.)
@@ -947,6 +954,7 @@ MAPE is the sum of the individual absolute errors divided by the demand (each pe
 
 
 ***Model 2***
+
 To compare model 1 with model 2 we have made certain improvements to the data and will test how it will perform.
 ```{r}
 #improvements
@@ -982,7 +990,6 @@ summary(test2)
 ```{r}
 # Build the model on training data
 model6 <- lm(charges ~ age + smoker + bmi30 + region + children + sex, data = train2)
-chargesPred <- predict(model6, test2)
 summary(model6)
 
 ```
@@ -1044,11 +1051,11 @@ DMwR::regr.eval(actuals_preds2$actuals, actuals_preds2$predicted)
 
 
 When we compare 2 models, one with original training data and one with improvements, we can see that prediction power increased after the improvements.
-Multiple R-squared value in the first model (model5) is 0.7465 and the second model (model6) is 0.7688 , so it is pretty good improvement.
-In our prediction matrix we can see that in the first model it was 0.8768414 (approx 88%) which is much higher than in the second model (model6), where the value is 0.8261449 (approx 84%).
-F-statistic that used to estimate the significance of a regression model as a whole in our second model (model6) is much higher 585.2 than in the first model (model5) - 257.7
+Multiple R-squared value in the first model (model5) is 0.7465 and the second model (model6) is 0.7534 , so it is pretty good improvement.
+In our prediction matrix we can see that in the first model it was 0.8768414 (approx 88%) which is much higher than in the second model (model6), where the value is 0.8665147 (approx 87%).
+F-statistic that used to estimate the significance of a regression model as a whole in our second model (model6) is much higher 537.8 than in the first model (model5) with value 257.7
 Min_Max Accuracy with the value closer to 1, means the better prediction, if measure is 1 it will be perfect model. In our sets we can see that in the second model the value is 0.712 and in the first model is 0.708, so the second model provides better prediction.
-MAPE express accuracy as a percentage of the error and in our models it is the same 4%.
+MAPE express accuracy as a percentage of the error and in our models it is 4% in the first model and 3.8% in the second.
 MAE  measures the average magnitude of the errors in a set of predictions, in our models the lowest value we have in the first model (model5) - 3652, the smaller MAE suggest that the model is better at prediction.
-RMSE showing us that on average, our predictions varied from observed values by an absolute measure 6122.22 in the second model and 5264 in the first model.
+RMSE showing us that on average, our predictions varied from observed values by an absolute measure 5954 in the second model and 5264 in the first model.
 
